@@ -1,0 +1,119 @@
+[
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "file",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "file",
+        "description": "file",
+        "detail": "file",
+        "documentation": {}
+    },
+    {
+        "label": "file_to_board",
+        "kind": 2,
+        "importPath": "file",
+        "description": "file",
+        "peekOfCode": "def file_to_board():\n    # Lê o arquivo de entrada e retorna uma lista de tabuleiros\n    with open('tabuleiros.txt', 'r') as f:\n        lines = f.readlines()\n        boards = []\n        for line in lines:\n            board = []\n            for char in line:\n                if char != '\\n' and char != ' ':\n                    board.append(int(char))",
+        "detail": "file",
+        "documentation": {}
+    },
+    {
+        "label": "format_board",
+        "kind": 2,
+        "importPath": "file",
+        "description": "file",
+        "peekOfCode": "def format_board(board):\n    formatted_board = []\n    for i in range(9):\n        row = []\n        for j in range(9):\n            # Para a esquerda\n            left = '/' if j == 0 else '>' if board[i][j] > board[i][j-1] else '<'\n            # Para cima\n            up = '/' if i == 0 else '>' if board[i][j] > board[i-1][j] else '<'\n            # Para a direita",
+        "detail": "file",
+        "documentation": {}
+    },
+    {
+        "label": "print_format_board",
+        "kind": 2,
+        "importPath": "file",
+        "description": "file",
+        "peekOfCode": "def print_format_board(formated_board):\n    # print each cell\n    for row in formated_board:\n        for cell in row:\n            print(cell)",
+        "detail": "file",
+        "documentation": {}
+    },
+    {
+        "label": "format_sudoku",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def format_sudoku(board):\n    formatted_board = []\n    for i in range(9):\n        row = []\n        for j in range(9):\n            # Para a esquerda\n            left = '/' if j == 0 else '>' if board[i][j] > board[i][j-1] else '<'\n            # Para cima\n            up = '/' if i == 0 else '>' if board[i][j] > board[i-1][j] else '<'\n            # Para a direita",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "sudoku",
+        "kind": 5,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "sudoku = np.array([\n    [5, 3, 4, 6, 7, 8, 9, 1, 2],\n    [6, 7, 2, 1, 9, 5, 3, 4, 8],\n    [1, 9, 8, 3, 4, 2, 5, 6, 7],\n    [8, 5, 9, 7, 6, 1, 4, 2, 3],\n    [4, 2, 6, 8, 5, 3, 7, 9, 1],\n    [7, 1, 3, 9, 2, 4, 8, 5, 6],\n    [9, 6, 1, 5, 3, 7, 2, 8, 4],\n    [2, 8, 7, 4, 1, 9, 6, 3, 5],\n    [3, 4, 5, 2, 8, 6, 1, 7, 9]",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "formatted_sudoku",
+        "kind": 5,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku)\nformatted_sudoku",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "read_file",
+        "kind": 2,
+        "importPath": "solver",
+        "description": "solver",
+        "peekOfCode": "def read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0\n        for line in lines:\n            row += 1\n            ranges = [1, SIZE + 1]",
+        "detail": "solver",
+        "documentation": {}
+    },
+    {
+        "label": "SIZE",
+        "kind": 5,
+        "importPath": "solver",
+        "description": "solver",
+        "peekOfCode": "SIZE = 9\nboard = file.file_to_board()\nformatted_board = file.format_board(board)\ndef read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0",
+        "detail": "solver",
+        "documentation": {}
+    },
+    {
+        "label": "board",
+        "kind": 5,
+        "importPath": "solver",
+        "description": "solver",
+        "peekOfCode": "board = file.file_to_board()\nformatted_board = file.format_board(board)\ndef read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0\n        for line in lines:",
+        "detail": "solver",
+        "documentation": {}
+    },
+    {
+        "label": "formatted_board",
+        "kind": 5,
+        "importPath": "solver",
+        "description": "solver",
+        "peekOfCode": "formatted_board = file.format_board(board)\ndef read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0\n        for line in lines:\n            row += 1",
+        "detail": "solver",
+        "documentation": {}
+    },
+    {
+        "label": "board",
+        "kind": 5,
+        "importPath": "solver",
+        "description": "solver",
+        "peekOfCode": "board = read_file()\n''''\nfor j in range(3):\n    l = (i//3)*3 + j\n    for k in range(3):\n        c = (i % 3)*3 + k\n'''\n# celulas_prontas = 0\n# while celulas_prontas < SIZE**2:\n#     for row in range(SIZE):",
+        "detail": "solver",
+        "documentation": {}
+    }
+]
