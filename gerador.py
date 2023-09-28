@@ -17,24 +17,56 @@ sudoku = np.array([
 # Função para formatar o tabuleiro de acordo com as regras fornecidas
 def format_sudoku(board):
     formatted_board = []
-
+    
     for i in range(9):
         row = []
         for j in range(9):
+            sinais_de_maior = 0
+            sinais_de_menor = 0
             # Para a esquerda
-            left = '/' if j == 0 else '>' if board[i][j] > board[i][j-1] else '<'
+            if j == 0:
+                left = '/'
+            elif board[i][j] > board[i][j-1]:
+                left = '>'
+                sinais_de_maior += 1
+            else:
+                left = '<'
+                sinais_de_menor += 1
 
             # Para cima
-            up = '/' if i == 0 else '>' if board[i][j] > board[i-1][j] else '<'
+            if i == 0:
+                up = '/'
+            elif board[i][j] > board[i-1][j]:
+                up = '>'
+                sinais_de_maior += 1
+            else:
+                up = '<'
+                sinais_de_menor += 1
 
             # Para a direita
-            right = '/' if j == 8 else '>' if board[i][j] > board[i][j+1] else '<'
+            if j == 8:
+                right = '/'
+            elif board[i][j] > board[i][j+1]:
+                right = '>'
+                sinais_de_maior += 1
+            else:
+                right = '<'
+                sinais_de_menor += 1
 
             # Para baixo
-            down = '/' if i == 8 else '>' if board[i][j] > board[i+1][j] else '<'
+            if i == 8:
+                down = '/'
+            elif board[i][j] > board[i+1][j]:
+                down = '>'
+                sinais_de_maior += 1
+            else:
+                down = '<'
+                sinais_de_menor += 1
 
             # Adicionando ao formato da célula
-            cell_format = f"{left} {up} {right} {down}"
+            numeros_disponiveis = [i for i in range(1 + sinais_de_maior, 10 - sinais_de_menor)]
+            cell_format = f"{left} {up} {right} {down} {numeros_disponiveis}"
+            print(cell_format)
             row.append(cell_format)
 
         formatted_board.append(row)
@@ -43,4 +75,4 @@ def format_sudoku(board):
 
 # Formatando o tabuleiro resolvido
 formatted_sudoku = format_sudoku(sudoku)
-formatted_sudoku
+
