@@ -49,7 +49,7 @@
         "kind": 2,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "def format_sudoku(board):\n    formatted_board = []\n    for i in range(9):\n        row = []\n        for j in range(9):\n            # Para a esquerda\n            left = '/' if j == 0 else '>' if board[i][j] > board[i][j-1] else '<'\n            # Para cima\n            up = '/' if i == 0 else '>' if board[i][j] > board[i-1][j] else '<'\n            # Para a direita",
+        "peekOfCode": "def format_sudoku(board):\n    formatted_board = []\n    for i in range(9):\n        row = []\n        for j in range(9):\n            sinais_de_maior = 0\n            sinais_de_menor = 0\n            # Para a esquerda\n            if j == 0:\n                left = '/'",
         "detail": "gerador",
         "documentation": {}
     },
@@ -67,7 +67,7 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku)\nformatted_sudoku",
+        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku)",
         "detail": "gerador",
         "documentation": {}
     },

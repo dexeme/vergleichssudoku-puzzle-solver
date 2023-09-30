@@ -6,6 +6,7 @@ board = file.file_to_board()
 
 formatted_board = file.format_board(board)
 
+
 def read_file():
     with open('tabuleiros_formatados.txt') as f:
         lines = f.readlines()
@@ -29,6 +30,7 @@ def read_file():
                 linha = []
             print(celula)
         return boards
+
 
 board = read_file()
 
