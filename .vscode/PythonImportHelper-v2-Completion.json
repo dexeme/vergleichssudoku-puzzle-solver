@@ -18,6 +18,51 @@
         "documentation": {}
     },
     {
+        "label": "find_empty",
+        "kind": 2,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "def find_empty(board):\n    for row in range(len(board)):\n        for col in range(len(board[0])):\n            if board[row][col] == 0:\n                return (row, col)\n    return None\ndef solve(board):\n    find = find_empty(board)\n    if not find:\n        return True",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "solve",
+        "kind": 2,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "def solve(board):\n    find = find_empty(board)\n    if not find:\n        return True\n    else:\n        row, col = find\n    for num in range(1, 10):\n        if valid(board, num, row, col):\n            board[row][col] = num\n            if solve(board):",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "valid",
+        "kind": 2,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "def valid(board, num, row, col):\n    # Check row\n    for i in range(len(board[0])):\n        if board[row][i] == num and col != i:\n            return False\n    # Check column\n    for i in range(len(board)):\n        if board[i][col] == num and row != i:\n            return False\n    # Check box",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "print_board",
+        "kind": 2,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "def print_board(bo):\n    for i in range(len(bo)):\n        if i % 3 == 0 and i != 0:\n            print(\"- - - - - - - - - - - - - \")\n        for j in range(len(bo[0])):\n            if j % 3 == 0 and j != 0:\n                print(\" | \", end=\"\")\n            if j == 8:\n                print(bo[i][j])\n            else:",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "board",
+        "kind": 5,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "board = [\n    [7, 8, 0, 4, 0, 0, 1, 2, 0],\n    [6, 0, 0, 0, 7, 5, 0, 0, 9],\n    [0, 0, 0, 6, 0, 1, 0, 7, 8],\n    [0, 0, 7, 0, 4, 0, 2, 6, 0],\n    [0, 0, 1, 0, 5, 0, 9, 3, 0],\n    [9, 0, 4, 0, 6, 0, 0, 0, 5],\n    [0, 7, 0, 3, 0, 0, 0, 1, 2],\n    [1, 2, 0, 0, 0, 7, 4, 0, 0],\n    [0, 4, 9, 2, 0, 6, 0, 0, 7]",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
         "label": "file_to_board",
         "kind": 2,
         "importPath": "file",
