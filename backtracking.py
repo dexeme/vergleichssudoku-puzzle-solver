@@ -1,88 +1,128 @@
-'''
-Algorithm
-Starting with an incomplete board:
+def find_empty(board, row=0, col=0):
+    # Se ultrapassarmos as linhas, não encontramos uma célula vazia.
+    if row == len(board):
+        return None
+    # Se encontrarmos uma célula vazia, retornamos sua posição.
+    if board[row][col] == 0:
+        return (row, col)
 
-1. Find some empty space
-2. Attempt to place the digits 1-9 in that space
-3. Check if that digit is valid in the current
-spot based on the current board
-4. a. If the digit is valid, recursively attempt
-to fill the board using steps 1-3.
-4. b. If it is not valid, reset the square you
-just filled and go back to the previous step.
-5. Once the board is full by the definition of
-this algorithm we have found a solution.
-'''
-
-
-# encontra a primeira célula vazia
-def find_empty(board):
-    for row in range(len(board)):
-        for col in range(len(board[0])):
-            if board[row][col] == 0:
-                return (row, col)
-
-    return None
-
-
-def solve(board):
-    find = find_empty(board)
-    if not find:
-        return True
-    else:
-        row, col = find
-
-    for num in range(1, 10):
-        if valid(board, num, row, col):
-            board[row][col] = num
-
-            if solve(board):
-                return True
-
-            board[row][col] = 0
-
-    return False
+    # Avançar para a próxima célula.
+    col += 1
+    if col == len(board[row]):
+        col = 0
+        row += 1
+    # Chamada recursiva para a próxima célula.
+    return find_empty(board, row, col)
 
 
 def valid(board, num, row, col):
-    # Check row
-    for i in range(len(board[0])):
-        if board[row][i] == num and col != i:
-            return False
+    size = len(board)
+    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.
+    box_rows, box_cols = (2, 3) if size == 6 else (
+        int(size**0.5), int(size**0.5))
 
-    # Check column
-    for i in range(len(board)):
-        if board[i][col] == num and row != i:
-            return False
+    # Verificar se o número é válido na linha.
+    row_valid = all([board[row][i] != num for i in range(size)])
+    # Verificar se o número é válido na coluna.
+    col_valid = all([board[i][col] != num for i in range(size)])
 
-    # Check box
-    box_x = col // 3
-    box_y = row // 3
+    # Identificar a caixa/região à qual a célula pertence.
+    box_x = col // box_cols
+    box_y = row // box_rows
+    # Verificar se o número é válido na caixa/região.
+    box_valid = all([board[i][j] != num
+                     for i in range(box_y * box_rows,
+                                    (box_y + 1) * box_rows)
+                     for j in range(box_x * box_cols,
+                                    (box_x + 1) * box_cols)])
 
-    for i in range(box_y*3, box_y*3 + 3):
-        for j in range(box_x * 3, box_x*3 + 3):
-            if board[i][j] == num and (i != row or j != col):
-                return False
-
-    return True
-
-
-def print_board(bo):
-    for i in range(len(bo)):
-        if i % 3 == 0 and i != 0:
-            print("- - - - - - - - - - - - - ")
-
-        for j in range(len(bo[0])):
-            if j % 3 == 0 and j != 0:
-                print(" | ", end="")
-
-            if j == 8:
-                print(bo[i][j])
-            else:
-                print(str(bo[i][j]) + " ", end="")
+    # Retorna True se o número for válido em todas as verificações.
+    return row_valid and col_valid and box_valid
 
 
-board = [
+def solve_cell(board, num, row, col):
+    # Verificar se o número é válido para a célula.
+    if not valid(board, num, row, col):
+        return None
+    # Se for válido, criar uma cópia do
+    # tabuleiro e colocar o número na célula.
+    new_board = [list(r) for r in board]
+    new_board[row][col] = num
+    # Tentar resolver o tabuleiro com o novo número.
+    return solve(new_board)
+
+
+def solve(board):
+    # Procurar uma célula vazia.
+    empty = find_empty(board)
+    # Se não houver célula vazia,
+    # o tabuleiro está completo.
+    if not empty:
+        return board
+    row, col = empty
+    size = len(board)
+    # Tentar inserir números de 1
+    # ao tamanho do tabuleiro na
+    # célula vazia.
+    for num in range(1, size + 1):
+        # Se um número for válido,
+        # continuamos resolvendo a
+        # partir dessa configuração.
+        solved = solve_cell(board, num, row, col)
+        if solved:
+            return solved
+    # Se nenhum número for válido,
+    # retornamos None para indicar
+    # uma solução inválida.
+    return None
+
+
+def print_row(row, col_idx=0):
+    size = len(row)
+    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.
+    box_size = 2 if size == 6 else int(size**0.5)
+    if col_idx == size:
+        print()
+        return
+    sep = " | " if col_idx % box_size == box_size - 1 else " "
+    print(row[col_idx], end=sep)
+    print_row(row, col_idx + 1)
+
+
+def print_board(bo, row_idx=0):
+    if not bo:
+        print("No solution exists for the provided Sudoku.")
+        return
+    size = len(bo)
+    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.
+    box_size = 2 if size == 6 else int(size**0.5)
+    if row_idx == size:
+        return
+    if row_idx % box_size == 0 and row_idx != 0:
+        print("-" * (2 * size + box_size - 1))
+    print_row(bo[row_idx])
+    print_board(bo, row_idx + 1)
+
+
+# Teste 4x4
+board_4x4 = [
+    [0, 2, 0, 0],
+    [4, 0, 3, 0],
+    [0, 3, 0, 4],
+    [0, 0, 2, 0]
+]
+
+# Teste 6x6
+board_6x6 = [
+    [5, 0, 0, 6, 0, 4],
+    [0, 0, 6, 0, 0, 0],
+    [0, 4, 0, 0, 5, 0],
+    [0, 2, 0, 0, 3, 0],
+    [0, 0, 0, 4, 0, 0],
+    [1, 0, 5, 0, 0, 6]
+]
+# Teste 9x9
+board_9x9 = [
     [7, 8, 0, 4, 0, 0, 1, 2, 0],
     [6, 0, 0, 0, 7, 5, 0, 0, 9],
     [0, 0, 0, 6, 0, 1, 0, 7, 8],
@@ -94,7 +134,21 @@ board = [
     [0, 4, 9, 2, 0, 6, 0, 0, 7]
 ]
 
-print_board(board)
-solve(board)
-print("_______________________\n")
-print_board(board)
+print("4--------------------------------4\n")
+print_board(board_4x4)
+result = solve(board_4x4)
+print("__________________________\n")
+print_board(result)
+'''
+print("\n6--------------------------------6\n")
+print_board(board_6x6)
+result = solve(board_6x6)
+print("__________________________\n")
+print_board(result) '''
+
+
+print("\n9--------------------------------9\n")
+print_board(board_9x9)
+result = solve(board_9x9)
+print("__________________________\n")
+print_board(result)

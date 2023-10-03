@@ -1,7 +1,9 @@
-import numpy as np
+# import numpy as np
 
-# Gerando um tabuleiro de Sudoku resolvido (um padrão fixo para simplicidade)
-sudoku = np.array([
+# Gerando um tabuleiro de Sudoku resolvido
+# (um padrão fixo para simplicidade)
+
+sudoku = [
     [5, 3, 4, 6, 7, 8, 9, 1, 2],
     [6, 7, 2, 1, 9, 5, 3, 4, 8],
     [1, 9, 8, 3, 4, 2, 5, 6, 7],
@@ -11,13 +13,14 @@ sudoku = np.array([
     [9, 6, 1, 5, 3, 7, 2, 8, 4],
     [2, 8, 7, 4, 1, 9, 6, 3, 5],
     [3, 4, 5, 2, 8, 6, 1, 7, 9]
-])
+]
 
 
-# Função para formatar o tabuleiro de acordo com as regras fornecidas
+# Função para formatar o tabuleiro
+# de acordo com as regras fornecidas
 def format_sudoku(board):
     formatted_board = []
-    
+
     for i in range(9):
         row = []
         for j in range(9):
@@ -64,7 +67,8 @@ def format_sudoku(board):
                 sinais_de_menor += 1
 
             # Adicionando ao formato da célula
-            numeros_disponiveis = [i for i in range(1 + sinais_de_maior, 10 - sinais_de_menor)]
+            numeros_disponiveis = [
+                i for i in range(1 + sinais_de_maior, 10 - sinais_de_menor)]
             cell_format = f"{left} {up} {right} {down} {numeros_disponiveis}"
             print(cell_format)
             row.append(cell_format)
@@ -73,6 +77,20 @@ def format_sudoku(board):
     return formatted_board
 
 
+def reformat_comparative_sudoku(board):
+    reformatted_board = []
+
+    for row in board:
+        reformatted_row = []
+        for cell in row:
+            left, up, right, down = cell.split()
+            reformatted_cell = [0, left, up, right, down]
+            reformatted_row.append(reformatted_cell)
+        reformatted_board.append(reformatted_row)
+
+    return reformatted_board
+
+
 # Formatando o tabuleiro resolvido
 formatted_sudoku = format_sudoku(sudoku)
-
+comparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)

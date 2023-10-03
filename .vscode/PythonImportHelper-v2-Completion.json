@@ -1,14 +1,5 @@
 [
     {
-        "label": "numpy",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "numpy",
-        "description": "numpy",
-        "detail": "numpy",
-        "documentation": {}
-    },
-    {
         "label": "file",
         "kind": 6,
         "isExtraImport": true,
@@ -18,20 +9,20 @@
         "documentation": {}
     },
     {
+        "label": "gerador",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "gerador",
+        "description": "gerador",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
         "label": "find_empty",
         "kind": 2,
         "importPath": "backtracking",
         "description": "backtracking",
-        "peekOfCode": "def find_empty(board):\n    for row in range(len(board)):\n        for col in range(len(board[0])):\n            if board[row][col] == 0:\n                return (row, col)\n    return None\ndef solve(board):\n    find = find_empty(board)\n    if not find:\n        return True",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "solve",
-        "kind": 2,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "def solve(board):\n    find = find_empty(board)\n    if not find:\n        return True\n    else:\n        row, col = find\n    for num in range(1, 10):\n        if valid(board, num, row, col):\n            board[row][col] = num\n            if solve(board):",
+        "peekOfCode": "def find_empty(board, row=0, col=0):\n    # Se ultrapassarmos as linhas, não encontramos uma célula vazia.\n    if row == len(board):\n        return None\n    # Se encontrarmos uma célula vazia, retornamos sua posição.\n    if board[row][col] == 0:\n        return (row, col)\n    # Avançar para a próxima célula.\n    col += 1\n    if col == len(board[row]):",
         "detail": "backtracking",
         "documentation": {}
     },
@@ -40,7 +31,34 @@
         "kind": 2,
         "importPath": "backtracking",
         "description": "backtracking",
-        "peekOfCode": "def valid(board, num, row, col):\n    # Check row\n    for i in range(len(board[0])):\n        if board[row][i] == num and col != i:\n            return False\n    # Check column\n    for i in range(len(board)):\n        if board[i][col] == num and row != i:\n            return False\n    # Check box",
+        "peekOfCode": "def valid(board, num, row, col):\n    size = len(board)\n    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.\n    box_rows, box_cols = (2, 3) if size == 6 else (\n        int(size**0.5), int(size**0.5))\n    # Verificar se o número é válido na linha.\n    row_valid = all([board[row][i] != num for i in range(size)])\n    # Verificar se o número é válido na coluna.\n    col_valid = all([board[i][col] != num for i in range(size)])\n    # Identificar a caixa/região à qual a célula pertence.",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "solve_cell",
+        "kind": 2,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "def solve_cell(board, num, row, col):\n    # Verificar se o número é válido para a célula.\n    if not valid(board, num, row, col):\n        return None\n    # Se for válido, criar uma cópia do\n    # tabuleiro e colocar o número na célula.\n    new_board = [list(r) for r in board]\n    new_board[row][col] = num\n    # Tentar resolver o tabuleiro com o novo número.\n    return solve(new_board)",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "solve",
+        "kind": 2,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "def solve(board):\n    # Procurar uma célula vazia.\n    empty = find_empty(board)\n    # Se não houver célula vazia,\n    # o tabuleiro está completo.\n    if not empty:\n        return board\n    row, col = empty\n    size = len(board)\n    # Tentar inserir números de 1",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "print_row",
+        "kind": 2,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "def print_row(row, col_idx=0):\n    size = len(row)\n    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.\n    box_size = 2 if size == 6 else int(size**0.5)\n    if col_idx == size:\n        print()\n        return\n    sep = \" | \" if col_idx % box_size == box_size - 1 else \" \"\n    print(row[col_idx], end=sep)\n    print_row(row, col_idx + 1)",
         "detail": "backtracking",
         "documentation": {}
     },
@@ -49,17 +67,116 @@
         "kind": 2,
         "importPath": "backtracking",
         "description": "backtracking",
-        "peekOfCode": "def print_board(bo):\n    for i in range(len(bo)):\n        if i % 3 == 0 and i != 0:\n            print(\"- - - - - - - - - - - - - \")\n        for j in range(len(bo[0])):\n            if j % 3 == 0 and j != 0:\n                print(\" | \", end=\"\")\n            if j == 8:\n                print(bo[i][j])\n            else:",
+        "peekOfCode": "def print_board(bo, row_idx=0):\n    if not bo:\n        print(\"No solution exists for the provided Sudoku.\")\n        return\n    size = len(bo)\n    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.\n    box_size = 2 if size == 6 else int(size**0.5)\n    if row_idx == size:\n        return\n    if row_idx % box_size == 0 and row_idx != 0:",
         "detail": "backtracking",
         "documentation": {}
     },
     {
-        "label": "board",
+        "label": "board_4x4",
         "kind": 5,
         "importPath": "backtracking",
         "description": "backtracking",
-        "peekOfCode": "board = [\n    [7, 8, 0, 4, 0, 0, 1, 2, 0],\n    [6, 0, 0, 0, 7, 5, 0, 0, 9],\n    [0, 0, 0, 6, 0, 1, 0, 7, 8],\n    [0, 0, 7, 0, 4, 0, 2, 6, 0],\n    [0, 0, 1, 0, 5, 0, 9, 3, 0],\n    [9, 0, 4, 0, 6, 0, 0, 0, 5],\n    [0, 7, 0, 3, 0, 0, 0, 1, 2],\n    [1, 2, 0, 0, 0, 7, 4, 0, 0],\n    [0, 4, 9, 2, 0, 6, 0, 0, 7]",
+        "peekOfCode": "board_4x4 = [\n    [0, 2, 0, 0],\n    [4, 0, 3, 0],\n    [0, 3, 0, 4],\n    [0, 0, 2, 0]\n]\n# Teste 6x6\nboard_6x6 = [\n    [5, 0, 0, 6, 0, 4],\n    [0, 0, 6, 0, 0, 0],",
         "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "board_6x6",
+        "kind": 5,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "board_6x6 = [\n    [5, 0, 0, 6, 0, 4],\n    [0, 0, 6, 0, 0, 0],\n    [0, 4, 0, 0, 5, 0],\n    [0, 2, 0, 0, 3, 0],\n    [0, 0, 0, 4, 0, 0],\n    [1, 0, 5, 0, 0, 6]\n]\n# Teste 9x9\nboard_9x9 = [",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "board_9x9",
+        "kind": 5,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "board_9x9 = [\n    [7, 8, 0, 4, 0, 0, 1, 2, 0],\n    [6, 0, 0, 0, 7, 5, 0, 0, 9],\n    [0, 0, 0, 6, 0, 1, 0, 7, 8],\n    [0, 0, 7, 0, 4, 0, 2, 6, 0],\n    [0, 0, 1, 0, 5, 0, 9, 3, 0],\n    [9, 0, 4, 0, 6, 0, 0, 0, 5],\n    [0, 7, 0, 3, 0, 0, 0, 1, 2],\n    [1, 2, 0, 0, 0, 7, 4, 0, 0],\n    [0, 4, 9, 2, 0, 6, 0, 0, 7]",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "result",
+        "kind": 5,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "result = solve(board_4x4)\nprint(\"__________________________\\n\")\nprint_board(result)\n'''\nprint(\"\\n6--------------------------------6\\n\")\nprint_board(board_6x6)\nresult = solve(board_6x6)\nprint(\"__________________________\\n\")\nprint_board(result) '''\nprint(\"\\n9--------------------------------9\\n\")",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "result",
+        "kind": 5,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "result = solve(board_6x6)\nprint(\"__________________________\\n\")\nprint_board(result) '''\nprint(\"\\n9--------------------------------9\\n\")\nprint_board(board_9x9)\nresult = solve(board_9x9)\nprint(\"__________________________\\n\")\nprint_board(result)",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "result",
+        "kind": 5,
+        "importPath": "backtracking",
+        "description": "backtracking",
+        "peekOfCode": "result = solve(board_9x9)\nprint(\"__________________________\\n\")\nprint_board(result)",
+        "detail": "backtracking",
+        "documentation": {}
+    },
+    {
+        "label": "find_empty",
+        "kind": 2,
+        "importPath": "backtracking_comparativo",
+        "description": "backtracking_comparativo",
+        "peekOfCode": "def find_empty(board):\n    for row in range(len(board)):\n        for col in range(len(board[0])):\n            if board[row][col][0] == 0:\n                return (row, col)\n    return None\ndef valid(board, num, row, col):\n    size = len(board)\n    # Verificar linha\n    row_valid = all([board[i][0] != num for i in range(size)])",
+        "detail": "backtracking_comparativo",
+        "documentation": {}
+    },
+    {
+        "label": "valid",
+        "kind": 2,
+        "importPath": "backtracking_comparativo",
+        "description": "backtracking_comparativo",
+        "peekOfCode": "def valid(board, num, row, col):\n    size = len(board)\n    # Verificar linha\n    row_valid = all([board[i][0] != num for i in range(size)])\n    # Verificar coluna\n    col_valid = all([board[row][i][0] != num for i in range(size)])\n    # Determine box size and validate box\n    if size == 4:\n        box_rows, box_cols = 2, 2\n    elif size == 6:",
+        "detail": "backtracking_comparativo",
+        "documentation": {}
+    },
+    {
+        "label": "solve",
+        "kind": 2,
+        "importPath": "backtracking_comparativo",
+        "description": "backtracking_comparativo",
+        "peekOfCode": "def solve(board):\n    empty = find_empty(board)\n    if not empty:\n        return board\n    row, col = empty\n    size = len(board)\n    for num in range(1, size + 1):\n        if valid(board, num, row, col):\n            board[row][col][0] = num\n            if solve(board):",
+        "detail": "backtracking_comparativo",
+        "documentation": {}
+    },
+    {
+        "label": "print_board",
+        "kind": 2,
+        "importPath": "backtracking_comparativo",
+        "description": "backtracking_comparativo",
+        "peekOfCode": "def print_board(board):\n    size = len(board)\n    for row in range(size):\n        if row % 3 == 0 and row != 0:\n            print(\"-\" * (size * 3))\n        for col in range(size):\n            if col % 3 == 0 and col != 0:\n                print(\"| \", end=\"\")\n            if col == size - 1:\n                print(board[row][col][0])",
+        "detail": "backtracking_comparativo",
+        "documentation": {}
+    },
+    {
+        "label": "board_9x9",
+        "kind": 5,
+        "importPath": "backtracking_comparativo",
+        "description": "backtracking_comparativo",
+        "peekOfCode": "board_9x9 = [[[\n  [0, '/', '/', '>', '>'],\n  [0, '<', '/', '<', '<'],\n  [0, '>', '/', '>', '>'],\n  [0, '<', '/', '>', '<'],\n  [0, '<', '/', '<', '<'],\n  [0, '>', '/', '<', '<'],\n  [0, '>', '/', '>', '>'],\n  [0, '<', '/', '<', '>'],\n  [0, '>', '/', '/', '>']],",
+        "detail": "backtracking_comparativo",
+        "documentation": {}
+    },
+    {
+        "label": "result_9x9",
+        "kind": 5,
+        "importPath": "backtracking_comparativo",
+        "description": "backtracking_comparativo",
+        "peekOfCode": "result_9x9 = solve(board_9x9)\nprint(\"-------------------\\n\")\nprint(\"Solved 9x9 Sudoku:\")\nif result_9x9:\n    print_board(result_9x9)\nelse:\n    print(\"No solution exists for the provided 9x9 Sudoku.\")",
+        "detail": "backtracking_comparativo",
         "documentation": {}
     },
     {
@@ -99,11 +216,20 @@
         "documentation": {}
     },
     {
+        "label": "reformat_comparative_sudoku",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def reformat_comparative_sudoku(board):\n    reformatted_board = []\n    for row in board:\n        reformatted_row = []\n        for cell in row:\n            left, up, right, down = cell.split()\n            reformatted_cell = [0, left, up, right, down]\n            reformatted_row.append(reformatted_cell)\n        reformatted_board.append(reformatted_row)\n    return reformatted_board",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
         "label": "sudoku",
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "sudoku = np.array([\n    [5, 3, 4, 6, 7, 8, 9, 1, 2],\n    [6, 7, 2, 1, 9, 5, 3, 4, 8],\n    [1, 9, 8, 3, 4, 2, 5, 6, 7],\n    [8, 5, 9, 7, 6, 1, 4, 2, 3],\n    [4, 2, 6, 8, 5, 3, 7, 9, 1],\n    [7, 1, 3, 9, 2, 4, 8, 5, 6],\n    [9, 6, 1, 5, 3, 7, 2, 8, 4],\n    [2, 8, 7, 4, 1, 9, 6, 3, 5],\n    [3, 4, 5, 2, 8, 6, 1, 7, 9]",
+        "peekOfCode": "sudoku = [\n    [5, 3, 4, 6, 7, 8, 9, 1, 2],\n    [6, 7, 2, 1, 9, 5, 3, 4, 8],\n    [1, 9, 8, 3, 4, 2, 5, 6, 7],\n    [8, 5, 9, 7, 6, 1, 4, 2, 3],\n    [4, 2, 6, 8, 5, 3, 7, 9, 1],\n    [7, 1, 3, 9, 2, 4, 8, 5, 6],\n    [9, 6, 1, 5, 3, 7, 2, 8, 4],\n    [2, 8, 7, 4, 1, 9, 6, 3, 5],\n    [3, 4, 5, 2, 8, 6, 1, 7, 9]",
         "detail": "gerador",
         "documentation": {}
     },
@@ -112,7 +238,16 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku)",
+        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku)\ncomparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "comparative_sudoku_board",
+        "kind": 5,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "comparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)",
         "detail": "gerador",
         "documentation": {}
     },
@@ -159,6 +294,42 @@
         "description": "solver",
         "peekOfCode": "board = read_file()\n''''\nfor j in range(3):\n    l = (i//3)*3 + j\n    for k in range(3):\n        c = (i % 3)*3 + k\n'''\n# celulas_prontas = 0\n# while celulas_prontas < SIZE**2:\n#     for row in range(SIZE):",
         "detail": "solver",
+        "documentation": {}
+    },
+    {
+        "label": "is_valid",
+        "kind": 2,
+        "importPath": "temp",
+        "description": "temp",
+        "peekOfCode": "def is_valid(board, num, row, col):\n    size = len(board)\n    # Check row\n    for i in range(size):\n        if board[row][i][0] == num:\n            return False\n    # Check column\n    for i in range(size):\n        if board[i][col][0] == num:\n            return False",
+        "detail": "temp",
+        "documentation": {}
+    },
+    {
+        "label": "find_empty",
+        "kind": 2,
+        "importPath": "temp",
+        "description": "temp",
+        "peekOfCode": "def find_empty(board):\n    for row in range(len(board)):\n        for col in range(len(board[0])):\n            if board[row][col][0] == 0:\n                return (row, col)\n    return None\ndef solve_comparative(board):\n    find = find_empty(board)\n    if not find:\n        return True",
+        "detail": "temp",
+        "documentation": {}
+    },
+    {
+        "label": "solve_comparative",
+        "kind": 2,
+        "importPath": "temp",
+        "description": "temp",
+        "peekOfCode": "def solve_comparative(board):\n    find = find_empty(board)\n    if not find:\n        return True\n    else:\n        row, col = find\n    for num in range(1, len(board) + 1):\n        if is_valid(board, num, row, col):\n            board[row][col][0] = num\n            if solve_comparative(board):",
+        "detail": "temp",
+        "documentation": {}
+    },
+    {
+        "label": "comparative_sudoku_board",
+        "kind": 5,
+        "importPath": "temp",
+        "description": "temp",
+        "peekOfCode": "comparative_sudoku_board = gerador.comparative_sudoku_board\nsolve_comparative(comparative_sudoku_board)",
+        "detail": "temp",
         "documentation": {}
     }
 ]
