@@ -63,9 +63,23 @@ replace2D :: [[a]] -> (Int, Int) -> a -> [[a]]
 replace2D matrix (i, j) x = take i matrix ++ [replace (matrix !! i) j x] ++ drop (i+1) matrix
     where replace row j x = take j row ++ [x] ++ drop (j+1) row
 
+printCell :: Cell -> IO ()
+printCell (value, _, _, _, _) = putStr (show value ++ " ")
+
+printBoard :: Board -> IO ()
+printBoard [] = return ()
+printBoard (row:rows) = do
+    mapM_ printCell row
+    putStrLn "" -- Nova linha após cada linha do tabuleiro
+    printBoard rows
+
+readBoard :: String -> Board
+readBoard input = read input :: Board
+
+
 main :: IO ()
 main = do
     content <- readFile "tabuleiro.txt"
-    let board = read content :: Board
-    print board
-    print (solveComparative board)
+    let board = readBoard content
+    let solution = solveComparative board
+    printBoard solution

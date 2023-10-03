@@ -73,6 +73,20 @@ def reformat_comparative_sudoku(board):
     return reformatted_board
 
 
+def reformat_comparative_sudoku_for_hs(board):
+    reformatted_board = []
+
+    for row in board:
+        reformatted_row = []
+        for cell in row:
+            left, up, right, down = cell.split()
+            reformatted_cell = (0, left, up, right, down)
+            reformatted_row.append(reformatted_cell)
+        reformatted_board.append(reformatted_row)
+
+    return reformatted_board
+
+
 def print_board(board):
     size = len(board)
     # Check box
@@ -139,8 +153,7 @@ sudoku4x4 = [
 
 # Formatando o tabuleiro resolvido
 formatted_sudoku = format_sudoku(sudoku2)
-comparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)
-
+board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
 arquivo = open("tabuleiro.txt", 'w')
-arquivo.write(str(comparative_sudoku_board))
+arquivo.write(str(board_for_haskell))
 arquivo.close()

@@ -216,6 +216,15 @@
         "documentation": {}
     },
     {
+        "label": "reformat_comparative_sudoku_for_hs",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def reformat_comparative_sudoku_for_hs(board):\n    reformatted_board = []\n    for row in board:\n        reformatted_row = []\n        for cell in row:\n            left, up, right, down = cell.split()\n            reformatted_cell = (0, left, up, right, down)\n            reformatted_row.append(reformatted_cell)\n        reformatted_board.append(reformatted_row)\n    return reformatted_board",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
         "label": "print_board",
         "kind": 2,
         "importPath": "gerador",
@@ -256,7 +265,7 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\n# Formatando o tabuleiro resolvido\nformatted_sudoku = format_sudoku(sudoku2)\ncomparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')",
+        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\n# Formatando o tabuleiro resolvido\nformatted_sudoku = format_sudoku(sudoku2)\nboard_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')",
         "detail": "gerador",
         "documentation": {}
     },
@@ -265,16 +274,16 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku2)\ncomparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(comparative_sudoku_board))\narquivo.close()",
+        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku2)\nboard_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(board_for_haskell))\narquivo.close()",
         "detail": "gerador",
         "documentation": {}
     },
     {
-        "label": "comparative_sudoku_board",
+        "label": "board_for_haskell",
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "comparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(comparative_sudoku_board))\narquivo.close()",
+        "peekOfCode": "board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(board_for_haskell))\narquivo.close()",
         "detail": "gerador",
         "documentation": {}
     },
@@ -283,7 +292,7 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "arquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(comparative_sudoku_board))\narquivo.close()",
+        "peekOfCode": "arquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(board_for_haskell))\narquivo.close()",
         "detail": "gerador",
         "documentation": {}
     },
