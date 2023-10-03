@@ -42,21 +42,23 @@ findEmpty board row col
     | otherwise = findEmpty board row (col+1)
 
 -- Tenta preencher uma célula vazia com um número válido
-tryNumber :: Board -> Int -> Int -> Int -> Board
+tryNumber :: Board -> Int -> Int -> Int -> Maybe Board
 tryNumber board num row col
-    | num > length board = board
+    | num > length board = Nothing
     | isValid board num row col =
         let newCell = (num, (\(_, l, _, _, _) -> l) (board !! row !! col), (\(_, _, u, _, _) -> u) (board !! row !! col), (\(_, _, _, r, _) -> r) (board !! row !! col), (\(_, _, _, _, d) -> d) (board !! row !! col))
             newBoard = replace2D board (row, col) newCell
-            updatedBoard = if solveComparative newBoard /= board then newBoard else tryNumber newBoard (num+1) row col
-        in updatedBoard
+            updatedBoard = solveComparative newBoard
+        in case updatedBoard of
+             Just _ -> updatedBoard
+             Nothing -> tryNumber board (num+1) row col
     | otherwise = tryNumber board (num+1) row col
 
--- Resolve o Sudoku usando backtracking
-solveComparative :: Board -> Board
+solveComparative :: Board -> Maybe Board
 solveComparative board
-    | findEmpty board 0 0 == Nothing = board
+    | findEmpty board 0 0 == Nothing = Just board
     | otherwise = let (row, col) = fromJust (findEmpty board 0 0) in tryNumber board 1 row col
+
 
 -- Substitui um elemento em uma lista 2D
 replace2D :: [[a]] -> (Int, Int) -> a -> [[a]]
@@ -82,4 +84,6 @@ main = do
     content <- readFile "tabuleiro.txt"
     let board = readBoard content
     let solution = solveComparative board
-    printBoard solution
+    case solution of
+         Just solved -> printBoard solved
+         Nothing -> putStrLn "No solution found"
