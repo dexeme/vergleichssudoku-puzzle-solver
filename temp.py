@@ -1,6 +1,23 @@
 import gerador
 
 
+def find_empty(board, row=0, col=0):
+    # Se ultrapassarmos as linhas, não encontramos uma célula vazia.
+    if row == len(board):
+        return None
+    # Se encontrarmos uma célula vazia, retornamos sua posição.
+    if board[row][col][0] == 0:
+        return (row, col)
+
+    # Avançar para a próxima célula.
+    col += 1
+    if col == len(board[row]):
+        col = 0
+        row += 1
+    # Chamada recursiva para a próxima célula.
+    return find_empty(board, row, col)
+
+
 def is_valid(board, num, row, col):
     size = len(board)
 
@@ -59,14 +76,6 @@ def is_valid(board, num, row, col):
             return False
 
     return True
-
-
-def find_empty(board):
-    for row in range(len(board)):
-        for col in range(len(board[0])):
-            if board[row][col][0] == 0:
-                return (row, col)
-    return None
 
 
 def solve_comparative(board):

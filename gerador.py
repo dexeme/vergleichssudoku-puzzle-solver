@@ -1,13 +1,12 @@
-
-
 # Função para formatar o tabuleiro
 # de acordo com as regras fornecidas
 def format_sudoku(board):
     formatted_board = []
+    size = len(board)
 
-    for i in range(9):
+    for i in range(size):
         row = []
-        for j in range(9):
+        for j in range(size):
             sinais_de_maior = 0
             sinais_de_menor = 0
             # Para a esquerda
@@ -31,7 +30,7 @@ def format_sudoku(board):
                 sinais_de_menor += 1
 
             # Para a direita
-            if j == 8:
+            if j == size-1:
                 right = '/'
             elif board[i][j] > board[i][j+1]:
                 right = '>'
@@ -41,7 +40,7 @@ def format_sudoku(board):
                 sinais_de_menor += 1
 
             # Para baixo
-            if i == 8:
+            if i == size-1:
                 down = '/'
             elif board[i][j] > board[i+1][j]:
                 down = '>'
@@ -76,11 +75,18 @@ def reformat_comparative_sudoku(board):
 
 def print_board(board):
     size = len(board)
+    # Check box
+    if size == 4:
+        box_rows, box_cols = 2, 2
+    elif size == 6:
+        box_rows, box_cols = 3, 2
+    else:
+        box_rows, box_cols = 3, 3
     for row in range(size):
-        if row % 3 == 0 and row != 0:
-            print("-" * ((size - 2) * 3))
+        if row % box_rows == 0 and row != 0:
+            print("-" * ((size + 2) * 2))
         for col in range(size):
-            if col % 3 == 0 and col != 0:
+            if col % box_cols == 0 and col != 0:
                 print("| ", end="")
             if col == size - 1:
                 print(board[row][col][0])
@@ -113,6 +119,22 @@ sudoku2 = [
     [7, 8, 6, 2, 3, 5, 9, 1, 4],
     [1, 5, 4, 7, 9, 6, 8, 2, 3],
     [2, 3, 9, 8, 4, 1, 5, 6, 7]
+]
+
+sudoku6x6 = [
+    [4, 6, 5, 1, 3, 2],
+    [5, 3, 6, 2, 4, 1],
+    [1, 2, 3, 4, 5, 6],
+    [3, 4, 2, 6, 1, 5],
+    [6, 5, 1, 3, 2, 4],
+    [2, 1, 4, 5, 6, 3]
+]
+
+sudoku4x4 = [
+    [1, 2, 3, 4],
+    [3, 4, 1, 2],
+    [2, 1, 4, 3],
+    [4, 3, 2, 1]
 ]
 
 # Formatando o tabuleiro resolvido
