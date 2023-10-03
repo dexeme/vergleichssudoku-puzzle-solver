@@ -256,7 +256,7 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\n# Formatando o tabuleiro resolvido\nformatted_sudoku = format_sudoku(sudoku2)\ncomparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)",
+        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\n# Formatando o tabuleiro resolvido\nformatted_sudoku = format_sudoku(sudoku2)\ncomparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')",
         "detail": "gerador",
         "documentation": {}
     },
@@ -265,7 +265,7 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku2)\ncomparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)",
+        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku2)\ncomparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(comparative_sudoku_board))\narquivo.close()",
         "detail": "gerador",
         "documentation": {}
     },
@@ -274,7 +274,16 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "comparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)",
+        "peekOfCode": "comparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(comparative_sudoku_board))\narquivo.close()",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "arquivo",
+        "kind": 5,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "arquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(comparative_sudoku_board))\narquivo.close()",
         "detail": "gerador",
         "documentation": {}
     },

@@ -140,3 +140,7 @@ sudoku4x4 = [
 # Formatando o tabuleiro resolvido
 formatted_sudoku = format_sudoku(sudoku2)
 comparative_sudoku_board = reformat_comparative_sudoku(formatted_sudoku)
+
+arquivo = open("tabuleiro.txt", 'w')
+arquivo.write(str(comparative_sudoku_board))
+arquivo.close()
