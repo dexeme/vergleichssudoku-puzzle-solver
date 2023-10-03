@@ -31,31 +31,31 @@ def is_valid(board, num, row, col):
 
     # Check the comparative rules
     # Left comparison
-    if col - 1 >= 0:
-        if board[row][col][1] == '<' and num <= board[row][col-1][0]:
+    if col > 0 and board[row][col-1][0] > 0:
+        if board[row][col][1] == '>' and num < board[row][col-1][0]:
             return False
-        if board[row][col][1] == '>' and num >= board[row][col-1][0]:
+        if board[row][col][1] == '<' and num > board[row][col-1][0]:
             return False
 
     # Up comparison
-    if row - 1 >= 0:
-        if board[row][col][2] == '<' and num <= board[row-1][col][0]:
+    if row > 0 and board[row-1][col][0] > 0:
+        if board[row][col][2] == '>' and num < board[row-1][col][0]:
             return False
-        if board[row][col][2] == '>' and num >= board[row-1][col][0]:
+        if board[row][col][2] == '<' and num > board[row-1][col][0]:
             return False
 
     # Right comparison
-    if col + 1 < size:
-        if board[row][col][3] == '<' and num <= board[row][col+1][0]:
+    if col + 1 < size and board[row][col+1][0] > 0:
+        if board[row][col][3] == '>' and num < board[row][col+1][0]:
             return False
-        if board[row][col][3] == '>' and num >= board[row][col+1][0]:
+        if board[row][col][3] == '<' and num > board[row][col+1][0]:
             return False
 
     # Down comparison
-    if row + 1 < size:
-        if board[row][col][4] == '<' and num <= board[row+1][col][0]:
+    if row + 1 < size and board[row+1][col][0] > 0:
+        if board[row][col][4] == '>' and num < board[row+1][col][0]:
             return False
-        if board[row][col][4] == '>' and num >= board[row+1][col][0]:
+        if board[row][col][4] == '<' and num > board[row+1][col][0]:
             return False
 
     return True
@@ -84,11 +84,13 @@ def solve_comparative(board):
                 return True
 
             board[row][col][0] = 0
-
     return False
 
 
 # Teste
-
 comparative_sudoku_board = gerador.comparative_sudoku_board
-solve_comparative(comparative_sudoku_board)
+print("--------inicial----------\n")
+gerador.print_board(comparative_sudoku_board)
+print("\n--------resolucao---------\n")
+resolveu = solve_comparative(comparative_sudoku_board)
+gerador.print_board(comparative_sudoku_board)
