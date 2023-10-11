@@ -84,25 +84,29 @@ isComparativeValid board num row col =
         rightVal = if col == (length (board !! 0) - 1) then 0 else firstElem (board !! row !! (col+1))
         downVal  = if row == (length board - 1) then 0 else firstElem (board !! (row+1) !! col)
 
-        checkLeft = if col == 0 then left == '/' 
-                    else (left == '/' || 
-                         (left == '<' && debugComparative '<' num leftVal (num < leftVal)) ||
-                         (left == '>' && debugComparative '>' num leftVal (num > leftVal)))
+        checkLeft
+            | col == 0 || leftVal == 0 = True
+            | left == '<' = debugComparative '<' num leftVal (num < leftVal)
+            | left == '>' = debugComparative '>' num leftVal (num > leftVal)
+            | otherwise = True
 
-        checkUp = if row == 0 then up == '/' 
-                  else (up == '/' || 
-                        (up == '<' && debugComparative '<' num upVal (num < upVal)) ||
-                        (up == '>' && debugComparative '>' num upVal (num > upVal)))
+        checkUp
+            | row == 0 || upVal == 0 = True
+            | up == '<' = debugComparative '<' num upVal (num < upVal)
+            | up == '>' = debugComparative '>' num upVal (num > upVal)
+            | otherwise = True
 
-        checkRight = if col == (length (board !! 0) - 1) then right == '/' 
-                     else (right == '/' || 
-                           (right == '<' && debugComparative '<' num rightVal (num < rightVal)) ||
-                           (right == '>' && debugComparative '>' num rightVal (num > rightVal)))
+        checkRight 
+            | col == (length (board !! 0) - 1) || rightVal == 0 = True
+            | right == '<' = debugComparative '<' num rightVal (num < rightVal)
+            | right == '>' = debugComparative '>' num rightVal (num > rightVal)
+            | otherwise = True
 
-        checkDown = if row == (length board - 1) then down == '/' 
-                    else (down == '/' || 
-                          (down == '<' && debugComparative '<' num downVal (num < downVal)) ||
-                          (down == '>' && debugComparative '>' num downVal (num > downVal)))
+        checkDown 
+            | row == (length board - 1) || downVal == 0 = True
+            | down == '<' = debugComparative '<' num downVal (num < downVal)
+            | down == '>' = debugComparative '>' num downVal (num > downVal)
+            | otherwise = True
 
     in checkLeft && checkUp && checkRight && checkDown
 
@@ -139,17 +143,18 @@ findEmpty board row col
 tryNumber :: Board -> Int -> Int -> Int -> Maybe Board
 tryNumber board num row col
     | num > length board = Nothing
-    | otherwise = 
-        if debugTryNumber num row col then
-            if isValid board num row col then
-                let newCell = (num, getSecond (board !! row !! col),
-                                    getThird (board !! row !! col),
-                                    getFourth (board !! row !! col),
-                                    getFifth (board !! row !! col))
-                    newBoard = replace2D board (row, col) newCell
-                in solveComparative newBoard
-            else tryNumber board (num+1) row col
-        else tryNumber board (num+1) row col
+    | isValid board num row col = 
+        let newCell = (num, getSecond (board !! row !! col),
+                            getThird (board !! row !! col),
+                            getFourth (board !! row !! col),
+                            getFifth (board !! row !! col))
+            newBoard = replace2D board (row, col) newCell
+            nextAttempt = solveComparative newBoard
+        in if nextAttempt == Nothing
+           then tryNumber board (num+1) row col
+           else nextAttempt
+    | otherwise = tryNumber board (num+1) row col
+
 
 
 
