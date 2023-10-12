@@ -5,15 +5,20 @@ import Data.Maybe (fromJust)
 type Cell = (Int, Char, Char, Char, Char)
 type Board = [[Cell]]
 
--- Função para obter o primeiro elemento de uma célula
-firstElem :: Cell -> Int
+-- Funções para obter elementos de uma célula
 firstElem (x, _, _, _, _) = x
-
--- Funções auxiliares para obter outras partes de uma célula
 getSecond (_, x, _, _, _) = x
 getThird (_, _, x, _, _) = x
 getFourth (_, _, _, x, _) = x
 getFifth (_, _, _, _, x) = x
+
+-- para parametrizar e limpar o código
+boxSize :: Int -> (Int, Int)
+boxSize n
+    | n == 4 = (2, 2)
+    | n == 6 = (3, 2)
+    | n == 9 = (3, 3)
+    | otherwise = error "Invalid board size"
 
 -- Verifica se um número não está repetido na linha atual
 isRowValid :: Board -> Int -> Int -> Bool
@@ -26,11 +31,14 @@ isColValid board num col = notElem num [firstElem (board !! r !! col) | r <- [0.
 -- Verifica se um número não está repetido na subcaixa atual
 isBoxValid :: Board -> Int -> Int -> Int -> Bool
 isBoxValid board num row col =
-    let boxSize = floor (sqrt (fromIntegral (length board)))
-        startRow = (row `div` boxSize) * boxSize
-        startCol = (col `div` boxSize) * boxSize
-        box = [board !! r !! c | r <- [startRow..(startRow + boxSize - 1)], c <- [startCol..(startCol + boxSize - 1)]]
+    let (boxRows, boxCols) = boxSize (length board)
+        startRow = (row `div` boxRows) * boxRows
+        startCol = (col `div` boxCols) * boxCols
+        box = [board !! r !! c | r <- [startRow..(startRow
+            + boxRows - 1)], c <- [startCol..(startCol 
+            + boxCols - 1)]]
     in notElem num (map firstElem box)
+
 
 -- Verifica se um número é válido considerando as comparações
 isComparativeValid :: Board -> Int -> Int -> Int -> Bool

@@ -101,9 +101,7 @@ def solve_comparative(board):
 
 
 def main():
-    formatted_sudoku = gerador.format_sudoku(gerador.sudoku4x4)
-    comparative_sudoku_board = gerador.reformat_comparative_sudoku(
-        formatted_sudoku)
+    comparative_sudoku_board = gerador.load_board_from_file()
     print("--------inicial----------\n")
     gerador.print_board(comparative_sudoku_board)
     print("\n--------resolucao---------\n")

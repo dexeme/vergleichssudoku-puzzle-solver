@@ -9,120 +9,12 @@
         "documentation": {}
     },
     {
-        "label": "file",
+        "label": "ast",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "file",
-        "description": "file",
-        "detail": "file",
-        "documentation": {}
-    },
-    {
-        "label": "find_empty",
-        "kind": 2,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "def find_empty(board, row=0, col=0):\n    # Se ultrapassarmos as linhas, não encontramos uma célula vazia.\n    if row == len(board):\n        return None\n    # Se encontrarmos uma célula vazia, retornamos sua posição.\n    if board[row][col] == 0:\n        return (row, col)\n    # Avançar para a próxima célula.\n    col += 1\n    if col == len(board[row]):",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "valid",
-        "kind": 2,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "def valid(board, num, row, col):\n    size = len(board)\n    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.\n    box_rows, box_cols = (2, 3) if size == 6 else (\n        int(size**0.5), int(size**0.5))\n    # Verificar se o número é válido na linha.\n    row_valid = all([board[row][i] != num for i in range(size)])\n    # Verificar se o número é válido na coluna.\n    col_valid = all([board[i][col] != num for i in range(size)])\n    # Identificar a caixa/região à qual a célula pertence.",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "solve_cell",
-        "kind": 2,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "def solve_cell(board, num, row, col):\n    # Verificar se o número é válido para a célula.\n    if not valid(board, num, row, col):\n        return None\n    # Se for válido, criar uma cópia do\n    # tabuleiro e colocar o número na célula.\n    new_board = [list(r) for r in board]\n    new_board[row][col] = num\n    # Tentar resolver o tabuleiro com o novo número.\n    return solve(new_board)",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "solve",
-        "kind": 2,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "def solve(board):\n    # Procurar uma célula vazia.\n    empty = find_empty(board)\n    # Se não houver célula vazia,\n    # o tabuleiro está completo.\n    if not empty:\n        return board\n    row, col = empty\n    size = len(board)\n    # Tentar inserir números de 1",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "print_row",
-        "kind": 2,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "def print_row(row, col_idx=0):\n    size = len(row)\n    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.\n    box_size = 2 if size == 6 else int(size**0.5)\n    if col_idx == size:\n        print()\n        return\n    sep = \" | \" if col_idx % box_size == box_size - 1 else \" \"\n    print(row[col_idx], end=sep)\n    print_row(row, col_idx + 1)",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "print_board",
-        "kind": 2,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "def print_board(bo, row_idx=0):\n    if not bo:\n        print(\"No solution exists for the provided Sudoku.\")\n        return\n    size = len(bo)\n    # Determinar o tamanho das regiões com base no tamanho do tabuleiro.\n    box_size = 2 if size == 6 else int(size**0.5)\n    if row_idx == size:\n        return\n    if row_idx % box_size == 0 and row_idx != 0:",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "board_4x4",
-        "kind": 5,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "board_4x4 = [\n    [0, 2, 0, 0],\n    [4, 0, 3, 0],\n    [0, 3, 0, 4],\n    [0, 0, 2, 0]\n]\n# Teste 6x6\nboard_6x6 = [\n    [5, 0, 0, 6, 0, 4],\n    [0, 0, 6, 0, 0, 0],",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "board_6x6",
-        "kind": 5,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "board_6x6 = [\n    [5, 0, 0, 6, 0, 4],\n    [0, 0, 6, 0, 0, 0],\n    [0, 4, 0, 0, 5, 0],\n    [0, 2, 0, 0, 3, 0],\n    [0, 0, 0, 4, 0, 0],\n    [1, 0, 5, 0, 0, 6]\n]\n# Teste 9x9\nboard_9x9 = [",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "board_9x9",
-        "kind": 5,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "board_9x9 = [\n    [7, 8, 0, 4, 0, 0, 1, 2, 0],\n    [6, 0, 0, 0, 7, 5, 0, 0, 9],\n    [0, 0, 0, 6, 0, 1, 0, 7, 8],\n    [0, 0, 7, 0, 4, 0, 2, 6, 0],\n    [0, 0, 1, 0, 5, 0, 9, 3, 0],\n    [9, 0, 4, 0, 6, 0, 0, 0, 5],\n    [0, 7, 0, 3, 0, 0, 0, 1, 2],\n    [1, 2, 0, 0, 0, 7, 4, 0, 0],\n    [0, 4, 9, 2, 0, 6, 0, 0, 7]",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "result",
-        "kind": 5,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "result = solve(board_4x4)\nprint(\"__________________________\\n\")\nprint_board(result)\n'''\nprint(\"\\n6--------------------------------6\\n\")\nprint_board(board_6x6)\nresult = solve(board_6x6)\nprint(\"__________________________\\n\")\nprint_board(result) '''\nprint(\"\\n9--------------------------------9\\n\")",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "result",
-        "kind": 5,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "result = solve(board_6x6)\nprint(\"__________________________\\n\")\nprint_board(result) '''\nprint(\"\\n9--------------------------------9\\n\")\nprint_board(board_9x9)\nresult = solve(board_9x9)\nprint(\"__________________________\\n\")\nprint_board(result)",
-        "detail": "backtracking",
-        "documentation": {}
-    },
-    {
-        "label": "result",
-        "kind": 5,
-        "importPath": "backtracking",
-        "description": "backtracking",
-        "peekOfCode": "result = solve(board_9x9)\nprint(\"__________________________\\n\")\nprint_board(result)",
-        "detail": "backtracking",
+        "importPath": "ast",
+        "description": "ast",
+        "detail": "ast",
         "documentation": {}
     },
     {
@@ -157,7 +49,7 @@
         "kind": 2,
         "importPath": "backtracking_comparativo",
         "description": "backtracking_comparativo",
-        "peekOfCode": "def solve_comparative(board):\n    find = find_empty(board)\n    if not find:\n        return True\n    row, col = find\n    return try_number(board, 1, row, col)\ndef main():\n    formatted_sudoku = gerador.format_sudoku(gerador.sudoku4x4)\n    comparative_sudoku_board = gerador.reformat_comparative_sudoku(\n        formatted_sudoku)",
+        "peekOfCode": "def solve_comparative(board):\n    find = find_empty(board)\n    if not find:\n        return True\n    row, col = find\n    return try_number(board, 1, row, col)\ndef main():\n    comparative_sudoku_board = gerador.load_board_from_file()\n    print(\"--------inicial----------\\n\")\n    gerador.print_board(comparative_sudoku_board)",
         "detail": "backtracking_comparativo",
         "documentation": {}
     },
@@ -166,35 +58,8 @@
         "kind": 2,
         "importPath": "backtracking_comparativo",
         "description": "backtracking_comparativo",
-        "peekOfCode": "def main():\n    formatted_sudoku = gerador.format_sudoku(gerador.sudoku4x4)\n    comparative_sudoku_board = gerador.reformat_comparative_sudoku(\n        formatted_sudoku)\n    print(\"--------inicial----------\\n\")\n    gerador.print_board(comparative_sudoku_board)\n    print(\"\\n--------resolucao---------\\n\")\n    solve_comparative(comparative_sudoku_board)\n    gerador.print_board(comparative_sudoku_board)\nmain()",
+        "peekOfCode": "def main():\n    comparative_sudoku_board = gerador.load_board_from_file()\n    print(\"--------inicial----------\\n\")\n    gerador.print_board(comparative_sudoku_board)\n    print(\"\\n--------resolucao---------\\n\")\n    solve_comparative(comparative_sudoku_board)\n    gerador.print_board(comparative_sudoku_board)\nmain()",
         "detail": "backtracking_comparativo",
-        "documentation": {}
-    },
-    {
-        "label": "file_to_board",
-        "kind": 2,
-        "importPath": "file",
-        "description": "file",
-        "peekOfCode": "def file_to_board():\n    # Lê o arquivo de entrada e retorna uma lista de tabuleiros\n    with open('tabuleiros.txt', 'r') as f:\n        lines = f.readlines()\n        boards = []\n        for line in lines:\n            board = []\n            for char in line:\n                if char != '\\n' and char != ' ':\n                    board.append(int(char))",
-        "detail": "file",
-        "documentation": {}
-    },
-    {
-        "label": "format_board",
-        "kind": 2,
-        "importPath": "file",
-        "description": "file",
-        "peekOfCode": "def format_board(board):\n    formatted_board = []\n    for i in range(9):\n        row = []\n        for j in range(9):\n            # Para a esquerda\n            left = '/' if j == 0 else '>' if board[i][j] > board[i][j-1] else '<'\n            # Para cima\n            up = '/' if i == 0 else '>' if board[i][j] > board[i-1][j] else '<'\n            # Para a direita",
-        "detail": "file",
-        "documentation": {}
-    },
-    {
-        "label": "print_format_board",
-        "kind": 2,
-        "importPath": "file",
-        "description": "file",
-        "peekOfCode": "def print_format_board(formated_board):\n    # print each cell\n    for row in formated_board:\n        for cell in row:\n            print(cell)",
-        "detail": "file",
         "documentation": {}
     },
     {
@@ -234,6 +99,33 @@
         "documentation": {}
     },
     {
+        "label": "read_solved_board_from_file",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def read_solved_board_from_file(filename):\n    with open(filename, 'r') as f:\n        lines = f.readlines()\n        # Convertendo cada linha (string) de volta para uma lista\n        board = [ast.literal_eval(line.strip()) for line in lines]\n    return board\ndef load_board_from_file(filename=\"tabuleiro.txt\"):\n    with open(filename, 'r') as f:\n        # Carregando o tabuleiro do arquivo e\n        # convertendo de volta para a estrutura",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "load_board_from_file",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def load_board_from_file(filename=\"tabuleiro.txt\"):\n    with open(filename, 'r') as f:\n        # Carregando o tabuleiro do arquivo e\n        # convertendo de volta para a estrutura\n        # de dados original\n        board_tuple = ast.literal_eval(f.read().strip())\n    # Convertendo o tabuleiro de tuplas para listas\n    board_list = [[list(cell) for cell in row] for row in board_tuple]\n    return board_list\ndef main():",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def main():\n    solved_board = read_solved_board_from_file(\"tabuleiros_prontos.txt\")\n    formatted_sudoku = format_sudoku(solved_board)\n    board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\n    with open(\"tabuleiro.txt\", 'w') as arquivo:\n        arquivo.write(str(board_for_haskell))\nmain()",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
         "label": "sudoku1",
         "kind": 5,
         "importPath": "gerador",
@@ -265,125 +157,8 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\n# Formatando o tabuleiro resolvido\nformatted_sudoku = format_sudoku(sudoku2)\nboard_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')",
+        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\ndef read_solved_board_from_file(filename):\n    with open(filename, 'r') as f:\n        lines = f.readlines()\n        # Convertendo cada linha (string) de volta para uma lista",
         "detail": "gerador",
-        "documentation": {}
-    },
-    {
-        "label": "formatted_sudoku",
-        "kind": 5,
-        "importPath": "gerador",
-        "description": "gerador",
-        "peekOfCode": "formatted_sudoku = format_sudoku(sudoku2)\nboard_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(board_for_haskell))\narquivo.close()",
-        "detail": "gerador",
-        "documentation": {}
-    },
-    {
-        "label": "board_for_haskell",
-        "kind": 5,
-        "importPath": "gerador",
-        "description": "gerador",
-        "peekOfCode": "board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\narquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(board_for_haskell))\narquivo.close()",
-        "detail": "gerador",
-        "documentation": {}
-    },
-    {
-        "label": "arquivo",
-        "kind": 5,
-        "importPath": "gerador",
-        "description": "gerador",
-        "peekOfCode": "arquivo = open(\"tabuleiro.txt\", 'w')\narquivo.write(str(board_for_haskell))\narquivo.close()",
-        "detail": "gerador",
-        "documentation": {}
-    },
-    {
-        "label": "read_file",
-        "kind": 2,
-        "importPath": "solver",
-        "description": "solver",
-        "peekOfCode": "def read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0\n        for line in lines:\n            row += 1\n            ranges = [1, SIZE + 1]",
-        "detail": "solver",
-        "documentation": {}
-    },
-    {
-        "label": "SIZE",
-        "kind": 5,
-        "importPath": "solver",
-        "description": "solver",
-        "peekOfCode": "SIZE = 9\nboard = file.file_to_board()\nformatted_board = file.format_board(board)\ndef read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0",
-        "detail": "solver",
-        "documentation": {}
-    },
-    {
-        "label": "board",
-        "kind": 5,
-        "importPath": "solver",
-        "description": "solver",
-        "peekOfCode": "board = file.file_to_board()\nformatted_board = file.format_board(board)\ndef read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0\n        for line in lines:",
-        "detail": "solver",
-        "documentation": {}
-    },
-    {
-        "label": "formatted_board",
-        "kind": 5,
-        "importPath": "solver",
-        "description": "solver",
-        "peekOfCode": "formatted_board = file.format_board(board)\ndef read_file():\n    with open('tabuleiros_formatados.txt') as f:\n        lines = f.readlines()\n        boards = []\n        linha = []\n        print('')\n        row = 0\n        for line in lines:\n            row += 1",
-        "detail": "solver",
-        "documentation": {}
-    },
-    {
-        "label": "board",
-        "kind": 5,
-        "importPath": "solver",
-        "description": "solver",
-        "peekOfCode": "board = read_file()\n''''\nfor j in range(3):\n    l = (i//3)*3 + j\n    for k in range(3):\n        c = (i % 3)*3 + k\n'''\n# celulas_prontas = 0\n# while celulas_prontas < SIZE**2:\n#     for row in range(SIZE):",
-        "detail": "solver",
-        "documentation": {}
-    },
-    {
-        "label": "find_empty",
-        "kind": 2,
-        "importPath": "temp",
-        "description": "temp",
-        "peekOfCode": "def find_empty(board, row=0, col=0):\n    # Se ultrapassarmos as linhas, não encontramos uma célula vazia.\n    if row == len(board):\n        return None\n    # Se encontrarmos uma célula vazia, retornamos sua posição.\n    if board[row][col][0] == 0:\n        return (row, col)\n    # Avançar para a próxima célula.\n    col += 1\n    if col == len(board[row]):",
-        "detail": "temp",
-        "documentation": {}
-    },
-    {
-        "label": "is_valid",
-        "kind": 2,
-        "importPath": "temp",
-        "description": "temp",
-        "peekOfCode": "def is_valid(board, num, row, col):\n    size = len(board)\n    # Check row\n    for i in range(size):\n        if board[row][i][0] == num:\n            return False\n    # Check column\n    for i in range(size):\n        if board[i][col][0] == num:\n            return False",
-        "detail": "temp",
-        "documentation": {}
-    },
-    {
-        "label": "solve_comparative",
-        "kind": 2,
-        "importPath": "temp",
-        "description": "temp",
-        "peekOfCode": "def solve_comparative(board):\n    find = find_empty(board)\n    if not find:\n        return True\n    else:\n        row, col = find\n    for num in range(1, len(board) + 1):\n        if is_valid(board, num, row, col):\n            board[row][col][0] = num\n            if solve_comparative(board):",
-        "detail": "temp",
-        "documentation": {}
-    },
-    {
-        "label": "comparative_sudoku_board",
-        "kind": 5,
-        "importPath": "temp",
-        "description": "temp",
-        "peekOfCode": "comparative_sudoku_board = gerador.comparative_sudoku_board\nprint(\"--------inicial----------\\n\")\ngerador.print_board(comparative_sudoku_board)\nprint(\"\\n--------resolucao---------\\n\")\nresolveu = solve_comparative(comparative_sudoku_board)\ngerador.print_board(comparative_sudoku_board)",
-        "detail": "temp",
-        "documentation": {}
-    },
-    {
-        "label": "resolveu",
-        "kind": 5,
-        "importPath": "temp",
-        "description": "temp",
-        "peekOfCode": "resolveu = solve_comparative(comparative_sudoku_board)\ngerador.print_board(comparative_sudoku_board)",
-        "detail": "temp",
         "documentation": {}
     }
 ]

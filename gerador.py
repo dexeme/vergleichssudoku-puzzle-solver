@@ -1,3 +1,6 @@
+import ast
+
+
 # Função para formatar o tabuleiro
 # de acordo com as regras fornecidas
 def format_sudoku(board):
@@ -151,9 +154,33 @@ sudoku4x4 = [
     [4, 3, 2, 1]
 ]
 
-# Formatando o tabuleiro resolvido
-formatted_sudoku = format_sudoku(sudoku2)
-board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
-arquivo = open("tabuleiro.txt", 'w')
-arquivo.write(str(board_for_haskell))
-arquivo.close()
+
+def read_solved_board_from_file(filename):
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        # Convertendo cada linha (string) de volta para uma lista
+        board = [ast.literal_eval(line.strip()) for line in lines]
+    return board
+
+
+def load_board_from_file(filename="tabuleiro.txt"):
+    with open(filename, 'r') as f:
+        # Carregando o tabuleiro do arquivo e
+        # convertendo de volta para a estrutura
+        # de dados original
+        board_tuple = ast.literal_eval(f.read().strip())
+
+    # Convertendo o tabuleiro de tuplas para listas
+    board_list = [[list(cell) for cell in row] for row in board_tuple]
+    return board_list
+
+
+def main():
+    solved_board = read_solved_board_from_file("tabuleiros_prontos.txt")
+    formatted_sudoku = format_sudoku(solved_board)
+    board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
+    with open("tabuleiro.txt", 'w') as arquivo:
+        arquivo.write(str(board_for_haskell))
+
+
+main()

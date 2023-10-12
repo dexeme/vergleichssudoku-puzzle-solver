@@ -1,5 +1,10 @@
 {
     "javascript.suggest.autoImports": false,
-    "typescript.suggest.autoImports": true,
-    "typescript.preferences.includePackageJsonAutoImports": "off"
+    "typescript.suggest.autoImports": false,
+    "typescript.preferences.includePackageJsonAutoImports": "off",
+    "files.autoSave": "onWindowChange",
+    "editor.defaultFormatter": "ms-python.autopep8",
+    "python.autoComplete.extraPaths": [],
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
 }
