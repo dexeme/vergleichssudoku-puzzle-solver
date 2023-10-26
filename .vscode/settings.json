@@ -6,5 +6,9 @@
     "editor.defaultFormatter": "ms-python.autopep8",
     "python.autoComplete.extraPaths": [],
     "editor.formatOnPaste": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
 }

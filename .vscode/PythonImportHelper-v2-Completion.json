@@ -9,6 +9,14 @@
         "documentation": {}
     },
     {
+        "label": "decide_sudoku",
+        "importPath": "gerador",
+        "description": "gerador",
+        "isExtraImport": true,
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
         "label": "ast",
         "kind": 6,
         "isExtraImport": true,
@@ -99,6 +107,15 @@
         "documentation": {}
     },
     {
+        "label": "write_solved_board_on_file",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def write_solved_board_on_file(filename, board):\n    with open(filename, 'w') as f:\n        for row in board:\n            f.write(str(row) + \"\\n\")\ndef read_solved_board_from_file(filename):\n    with open(filename, 'r') as f:\n        lines = f.readlines()\n        # Convertendo cada linha (string) de volta para uma lista\n        board = [ast.literal_eval(line.strip()) for line in lines]\n    return board",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
         "label": "read_solved_board_from_file",
         "kind": 2,
         "importPath": "gerador",
@@ -112,7 +129,16 @@
         "kind": 2,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "def load_board_from_file(filename=\"tabuleiro.txt\"):\n    with open(filename, 'r') as f:\n        # Carregando o tabuleiro do arquivo e\n        # convertendo de volta para a estrutura\n        # de dados original\n        board_tuple = ast.literal_eval(f.read().strip())\n    # Convertendo o tabuleiro de tuplas para listas\n    board_list = [[list(cell) for cell in row] for row in board_tuple]\n    return board_list\ndef main():",
+        "peekOfCode": "def load_board_from_file(filename=\"tabuleiro.txt\"):\n    with open(filename, 'r') as f:\n        # Carregando o tabuleiro do arquivo e\n        # convertendo de volta para a estrutura\n        # de dados original\n        board_tuple = ast.literal_eval(f.read().strip())\n    # Convertendo o tabuleiro de tuplas para listas\n    board_list = [[list(cell) for cell in row] for row in board_tuple]\n    return board_list\nsudoku1 = [",
+        "detail": "gerador",
+        "documentation": {}
+    },
+    {
+        "label": "decide_sudoku",
+        "kind": 2,
+        "importPath": "gerador",
+        "description": "gerador",
+        "peekOfCode": "def decide_sudoku():\n    esc = input(\"Escolha o sudoku: 1-4\")\n    if esc == \"1\":\n        return sudoku1\n    elif esc == \"2\":\n        return sudoku2\n    elif esc == \"3\":\n        return sudoku6x6\n    elif esc == \"4\":\n        return sudoku4x4",
         "detail": "gerador",
         "documentation": {}
     },
@@ -121,7 +147,7 @@
         "kind": 2,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "def main():\n    solved_board = read_solved_board_from_file(\"tabuleiros_prontos.txt\")\n    formatted_sudoku = format_sudoku(solved_board)\n    board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\n    with open(\"tabuleiro.txt\", 'w') as arquivo:\n        arquivo.write(str(board_for_haskell))\nmain()",
+        "peekOfCode": "def main():\n    write_solved_board_on_file(\"tabuleiros_prontos.txt\", decide_sudoku())\n    solved_board = read_solved_board_from_file(\"tabuleiros_prontos.txt\")\n    formatted_sudoku = format_sudoku(solved_board)\n    board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)\n    with open(\"tabuleiro.txt\", 'w') as arquivo:\n        arquivo.write(str(board_for_haskell))\nmain()",
         "detail": "gerador",
         "documentation": {}
     },
@@ -157,7 +183,7 @@
         "kind": 5,
         "importPath": "gerador",
         "description": "gerador",
-        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\ndef read_solved_board_from_file(filename):\n    with open(filename, 'r') as f:\n        lines = f.readlines()\n        # Convertendo cada linha (string) de volta para uma lista",
+        "peekOfCode": "sudoku4x4 = [\n    [1, 2, 3, 4],\n    [3, 4, 1, 2],\n    [2, 1, 4, 3],\n    [4, 3, 2, 1]\n]\ndef decide_sudoku():\n    esc = input(\"Escolha o sudoku: 1-4\")\n    if esc == \"1\":\n        return sudoku1",
         "detail": "gerador",
         "documentation": {}
     }

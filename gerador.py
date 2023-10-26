@@ -114,6 +114,33 @@ def print_board(board):
 # Gerando um tabuleiro de Sudoku resolvido
 # (um padrão fixo para simplicidade)
 
+
+def write_solved_board_on_file(filename, board):
+    with open(filename, 'w') as f:
+        for row in board:
+            f.write(str(row) + "\n")
+
+
+def read_solved_board_from_file(filename):
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        # Convertendo cada linha (string) de volta para uma lista
+        board = [ast.literal_eval(line.strip()) for line in lines]
+    return board
+
+
+def load_board_from_file(filename="tabuleiro.txt"):
+    with open(filename, 'r') as f:
+        # Carregando o tabuleiro do arquivo e
+        # convertendo de volta para a estrutura
+        # de dados original
+        board_tuple = ast.literal_eval(f.read().strip())
+
+    # Convertendo o tabuleiro de tuplas para listas
+    board_list = [[list(cell) for cell in row] for row in board_tuple]
+    return board_list
+
+
 sudoku1 = [
     [5, 3, 4, 6, 7, 8, 9, 1, 2],
     [6, 7, 2, 1, 9, 5, 3, 4, 8],
@@ -155,27 +182,23 @@ sudoku4x4 = [
 ]
 
 
-def read_solved_board_from_file(filename):
-    with open(filename, 'r') as f:
-        lines = f.readlines()
-        # Convertendo cada linha (string) de volta para uma lista
-        board = [ast.literal_eval(line.strip()) for line in lines]
-    return board
-
-
-def load_board_from_file(filename="tabuleiro.txt"):
-    with open(filename, 'r') as f:
-        # Carregando o tabuleiro do arquivo e
-        # convertendo de volta para a estrutura
-        # de dados original
-        board_tuple = ast.literal_eval(f.read().strip())
-
-    # Convertendo o tabuleiro de tuplas para listas
-    board_list = [[list(cell) for cell in row] for row in board_tuple]
-    return board_list
+def decide_sudoku():
+    print("Escolha o sudoku: 1-4")
+    esc = input()
+    if esc == "1":
+        return sudoku1
+    elif esc == "2":
+        return sudoku2
+    elif esc == "3":
+        return sudoku6x6
+    elif esc == "4":
+        return sudoku4x4
+    else:
+        return sudoku1
 
 
 def main():
+    write_solved_board_on_file("tabuleiros_prontos.txt", decide_sudoku())
     solved_board = read_solved_board_from_file("tabuleiros_prontos.txt")
     formatted_sudoku = format_sudoku(solved_board)
     board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
