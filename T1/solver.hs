@@ -134,7 +134,7 @@ readBoard input = read input :: Board
 -- Função principal
 main :: IO ()
 main = do
-    content <- readFile "tabuleiro.txt"
+    content <- readFile "../tabuleiro.txt"
     let board = readBoard content
     let solution = solveComparative board
     case solution of

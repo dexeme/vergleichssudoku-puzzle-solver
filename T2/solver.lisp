@@ -132,7 +132,7 @@
 
 ;; Função principal
 (defun main ()
-  (let ((content (with-open-file (stream "tabuleiro.txt" :direction :input)
+  (let ((content (with-open-file (stream "../tabuleiro.txt" :direction :input)
                    (read-line stream))))
     (let ((board (read-board content)))
       (let ((solution (solveComparative board)))
