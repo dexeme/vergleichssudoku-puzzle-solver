@@ -18,7 +18,7 @@ boxSize n
     | n == 4 = (2, 2)
     | n == 6 = (3, 2)
     | n == 9 = (3, 3)
-    | otherwise = error "Invalid board size"
+    | otherwise = error "Invalid board size\n"
 
 -- Verifica se um número não está repetido na linha atual
 isRowValid :: Board -> Int -> Int -> Bool
@@ -26,7 +26,8 @@ isRowValid board num row = notElem num (map firstElem (board !! row))
 
 -- Verifica se um número não está repetido na coluna atual
 isColValid :: Board -> Int -> Int -> Bool
-isColValid board num col = notElem num [firstElem (board !! r !! col) | r <- [0..length board - 1]]
+isColValid board num col = notElem num [firstElem (board !! r !! col) |
+ r <- [0..length board - 1]]
 
 -- Verifica se um número não está repetido na subcaixa atual
 isBoxValid :: Board -> Int -> Int -> Int -> Bool
@@ -44,10 +45,14 @@ isBoxValid board num row col =
 isComparativeValid :: Board -> Int -> Int -> Int -> Bool
 isComparativeValid board num row col =
     let (_, left, up, right, down) = board !! row !! col
-        leftVal  = if col == 0 then 0 else firstElem (board !! row !! (col-1))
-        upVal    = if row == 0 then 0 else firstElem (board !! (row-1) !! col)
-        rightVal = if col == (length (board !! 0) - 1) then 0 else firstElem (board !! row !! (col+1))
-        downVal  = if row == (length board - 1) then 0 else firstElem (board !! (row+1) !! col)
+        leftVal  = if col == 0 then 0 else firstElem (
+            board !! row !! (col-1))
+        upVal    = if row == 0 then 0 else firstElem (
+            board !! (row-1) !! col)
+        rightVal = if col == (length (board !! 0) - 1
+            ) then 0 else firstElem (board !! row !! (col+1))
+        downVal  = if row == (length board - 1)
+             then 0 else firstElem (board !! (row+1) !! col)
         -- Funções para verificar as comparações em todas as direções
         checkLeft
             | col == 0 || leftVal == 0 = True
@@ -75,7 +80,8 @@ isComparativeValid board num row col =
 -- Verifica se um número é válido considerando todas as regras
 isValid :: Board -> Int -> Int -> Int -> Bool
 isValid board num row col =
-    isRowValid board num row && isColValid board num col && isBoxValid board num row col && isComparativeValid board num row col
+    isRowValid board num row && isColValid board num col &&
+    isBoxValid board num row col && isComparativeValid board num row col
 
 -- Substitui um elemento em uma lista 2D
 replace2D :: [[a]] -> (Int, Int) -> a -> [[a]]
