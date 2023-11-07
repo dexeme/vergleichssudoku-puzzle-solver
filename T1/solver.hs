@@ -84,7 +84,7 @@ isValid board num row col =
     isBoxValid board num row col && isComparativeValid board num row col
 
 -- Substitui um elemento em uma lista 2D
-replace2D :: [[a]] -> (Int, Int) -> a -> [[a]]
+replace2D :: Board -> (Int, Int) -> Cell -> Board
 replace2D matrix (i, j) x = 
     take i matrix ++ [replace (matrix !! i) j x] ++ drop (i+1) matrix
   where

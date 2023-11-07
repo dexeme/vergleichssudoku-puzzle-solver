@@ -129,7 +129,7 @@ def read_solved_board_from_file(filename):
     return board
 
 
-def load_board_from_file(filename="../tabuleiro.txt"):
+def load_board_from_file(filename="tabuleiro.txt"):
     with open(filename, 'r') as f:
         # Carregando o tabuleiro do arquivo e
         # convertendo de volta para a estrutura
