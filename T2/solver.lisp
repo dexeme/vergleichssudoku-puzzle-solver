@@ -30,15 +30,19 @@
   (cond ((= n 4) '(2 2))
         ((= n 6) '(3 2))
         ((= n 9) '(3 3))
-        (t (error "Invalid board size"))))
+        (t (error "Invalid board size"))
+  )
+)
 
 ;; Verifica se um número não está repetido na linha atual
 (defun isRowValid (board num row)
-  (not (member num (mapcar #'first-elem (nth row (board-cells board))))))
+  (not (member num (mapcar #'first-elem (nth row (board-cells board)))))
+)
 
 ;; Verifica se um número não está repetido na coluna atual
 (defun isColValid (board num col)
-  (not (member num (mapcar (lambda (cell) (first-elem (nth col cell))) (board-cells board)))))
+  (not (member num (mapcar (lambda (cell) (first-elem (nth col cell))) (board-cells board))))
+)
 
 ;; Verifica se um número não está repetido na subcaixa atual
 (defun isBoxValid (board num row col)
@@ -50,7 +54,9 @@
          (box (loop for r from start-row to (+ start-row box-rows -1)
                     append (loop for c from start-col to (+ start-col box-cols -1)
                                  collect (nth c (nth r (board-cells board)))))))
-    (not (member num (mapcar #'first-elem box)))))
+    (not (member num (mapcar #'first-elem box)))
+  )
+)
 
 ;; Verifica se um número é válido considerando as comparações
 (defun isComparativeValid (board num row col)
@@ -67,27 +73,35 @@
      (or (= col 0) (= leftVal 0) (and (char= left #\<) (< num leftVal)) (and (char= left #\>) (> num leftVal)))
      (or (= row 0) (= upVal 0) (and (char= up #\<) (< num upVal)) (and (char= up #\>) (> num upVal)))
      (or (= col (- (length (nth 0 board)) 1)) (= rightVal 0) (and (char= right #\<) (< num rightVal)) (and (char= right #\>) (> num rightVal)))
-     (or (= row (- (length board) 1)) (= downVal 0) (and (char= down #\<) (< num downVal)) (and (char= down #\>) (> num downVal))))))
+     (or (= row (- (length board) 1)) (= downVal 0) (and (char= down #\<) (< num downVal)) (and (char= down #\>) (> num downVal)))
+    )
+  )
+)
 
 ;; Verifica se um número é válido considerando todas as regras
 (defun isValid (board num row col)
   (and (isRowValid board num row)
        (isColValid board num col)
        (isBoxValid board num row col)
-       (isComparativeValid board num row col)))
+       (isComparativeValid board num row col)
+  )
+)
 
 ;; Substitui um elemento em uma lista 2D
 (defun replace2D (matrix i j x)
   (let ((row (nth i matrix)))
     (setf (nth j row) x)
-    matrix))
+    matrix)
+)
 
 ;; Encontra uma célula vazia no tabuleiro
 (defun findEmpty (board row col)
   (cond ((= row (length board)) nil)
         ((= (first-elem (nth col (nth row board))) 0) (cons row col))
         ((= col (- (length (nth 0 board)) 1)) (findEmpty board (+ row 1) 0))
-        (t (findEmpty board row (+ col 1)))))
+        (t (findEmpty board row (+ col 1)))
+  )
+)
 
 ;; Tenta preencher uma célula vazia com um número válido
 (defun tryNumber (board num row col)
@@ -103,7 +117,9 @@
        (if (null nextAttempt)
            (tryNumber newBoard (+ num 1) row col)
            nextAttempt)))
-    (t (tryNumber board (+ num 1) row col))))
+    (t (tryNumber board (+ num 1) row col))
+  )
+)
 
 
 
@@ -114,28 +130,42 @@
       (let* ((emptyCell (findEmpty board 0 0))
              (row (car emptyCell))
              (col (cdr emptyCell)))
-        (tryNumber board 1 row col))))
+        (tryNumber board 1 row col)
+      )
+  )
+)
 
 ;; Funções de exibição
-(defun print-cell (cell)
+(defun printCell (cell)
   (let ((value (first cell)))
-    (princ (format nil "~a " value))))
+    (princ (format nil "~a " value))
+  )
+)
 
-(defun print-board (board)
+(defun printBoard (board)
   (dolist (row board)
-    (mapc #'print-cell row)
-    (terpri)))
+    (mapc #'printCell row)
+    (terpri)
+  )
+)
 
 ;; Lê o tabuleiro de uma string
-(defun read-board (input)
-  (read-from-string input))
+(defun readBoard (input)
+  (read-from-string input)
+)
 
 ;; Função principal
 (defun main ()
   (let ((content (with-open-file (stream "../tabuleiro.txt" :direction :input)
-                   (read-line stream))))
-    (let ((board (read-board content)))
+                   (read-line stream)))
+        )
+    (let ((board (readBoard content)))
       (let ((solution (solveComparative board)))
         (if solution
-            (print-board solution)
-            (princ "No solution found"))))))
+            (printBoard solution)
+            (princ "No solution found")
+        )
+      )
+    )
+  )
+)
