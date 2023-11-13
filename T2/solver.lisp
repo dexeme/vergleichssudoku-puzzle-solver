@@ -60,15 +60,18 @@
 
 ;; Verifica se um número é válido considerando as comparações
 (defun isComparativeValid (board num row col)
-  (let* ((cell (nth col (nth row board)))
-         (left (second cell))
-         (up (third cell))
-         (right (fourth cell))
-         (down (fifth cell))
-         (leftVal (if (= col 0) 0 (first-elem (nth (1- col) (nth row board)))))
-         (upVal (if (= row 0) 0 (first-elem (nth col (nth (1- row) board)))))
-         (rightVal (if (= col (- (length (nth 0 board)) 1)) 0 (first-elem (nth (1+ col) (nth row board)))))
-         (downVal (if (= row (- (length board) 1)) 0 (first-elem (nth col (nth (1+ row) board))))))
+  ;; Verifica se o número é válido com base nas comparações
+  (let* ((cell (nth col (nth row board))) ;; Acessa a célula atual
+         (left (cell-second cell)) ;; Acessa a comparação à esquerda
+         (up (cell-third cell)) ;; Acessa a comparação acima
+         (right (cell-fourth cell)) ;; Acessa a comparação à direita
+         (down (cell-fifth cell)) ;; Acessa a comparação abaixo
+         ;; Calcula os valores das células adjacentes
+         (leftVal (if (= col 0) 0 (cell-first (nth (1- col) (nth row board)))))
+         (upVal (if (= row 0) 0 (cell-first (nth col (nth (1- row) board)))))
+         (rightVal (if (= col (- (length (nth 0 board)) 1)) 0 (cell-first (nth (1+ col) (nth row board)))))
+         (downVal (if (= row (- (length board) 1)) 0 (cell-first (nth col (nth (1+ row) board))))))
+    ;; Verifica as comparações em todas as direções
     (and
      (or (= col 0) (= leftVal 0) (and (char= left #\<) (< num leftVal)) (and (char= left #\>) (> num leftVal)))
      (or (= row 0) (= upVal 0) (and (char= up #\<) (< num upVal)) (and (char= up #\>) (> num upVal)))
@@ -105,33 +108,37 @@
 
 ;; Tenta preencher uma célula vazia com um número válido
 (defun tryNumber (board num row col)
+  ;; Tentativa de preencher uma célula vazia
   (cond 
-    ((> num (length board)) nil)
-    ((isValid board num row col)
-     (let* ((newCell (list num (second (nth col (nth row board)))
-                          (third (nth col (nth row board)))
-                          (fourth (nth col (nth row board)))
-                          (fifth (nth col (nth row board)))))
-           (newBoard (replace2D board row col newCell))
-           (nextAttempt (solveComparative newBoard)))
+    ((> num (length board)) nil) ;; Se todos os números foram tentados, retorna nil
+    ((isValid board num row col) ;; Verifica se o número é válido
+     (let* ((currentCell (nth col (nth row board))) ;; Acessa a célula atual
+            (newCell (make-cell :first num ;; Cria uma nova célula com o número e as comparações
+                                :second (cell-second currentCell)
+                                :third (cell-third currentCell)
+                                :fourth (cell-fourth currentCell)
+                                :fifth (cell-fifth currentCell)))
+            (newBoard (replace2D board row col newCell)) ;; Substitui a célula no tabuleiro
+            (nextAttempt (solveComparative newBoard))) ;; Tenta resolver o resto do tabuleiro
        (if (null nextAttempt)
-           (tryNumber newBoard (+ num 1) row col)
-           nextAttempt)))
-    (t (tryNumber board (+ num 1) row col))
+           (tryNumber newBoard (+ num 1) row col) ;; Se não for bem-sucedido, tenta o próximo número
+           nextAttempt))) ;; Se bem-sucedido, retorna o tabuleiro resolvido
+    (t (tryNumber board (+ num 1) row col)) ;; Se o número não é válido, tenta o próximo
   )
 )
-
-
 
 ;; Resolve o tabuleiro
 (defun solveComparative (board)
   (if (null (findEmpty board 0 0))
       (list board)
-      (let* ((emptyCell (findEmpty board 0 0))
-             (row (car emptyCell))
-             (col (cdr emptyCell)))
+      (let* (
+            (emptyCell (findEmpty board 0 0))
+            (row (car emptyCell))
+            (col (cdr emptyCell))
+            )
         (tryNumber board 1 row col)
       )
+
   )
 )
 
@@ -169,3 +176,5 @@
     )
   )
 )
+
+(main)

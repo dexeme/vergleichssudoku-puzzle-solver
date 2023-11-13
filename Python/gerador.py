@@ -90,6 +90,18 @@ def reformat_comparative_sudoku_for_hs(board):
     return reformatted_board
 
 
+def reformat_comparative_sudoku_for_lisp(board):
+    reformatted_board = []
+    for row in board:
+        reformatted_row = []
+        for cell in row:
+            reformatted_cell = "(0 " + cell + ')'
+            reformatted_row.append(reformatted_cell)
+        reformatted_board.append(tuple(reformatted_row))
+
+    return tuple(reformatted_board)
+
+
 def print_board(board):
     size = len(board)
     # Check box
@@ -129,7 +141,22 @@ def read_solved_board_from_file(filename):
     return board
 
 
-def load_board_from_file(filename="tabuleiro.txt"):
+def write_lisp_board_on_file(filename, board):
+    tabuleiro = ["("]
+    for row in board:
+        tabuleiro.append("(")
+        for cell in row:
+            tabuleiro.append(cell)
+            tabuleiro.append(' ')
+        tabuleiro.pop()
+        tabuleiro.append(")")
+    tabuleiro.append(")")
+    tabuleiro = ''.join(tabuleiro)
+    with open(filename, 'w') as f:
+        f.write(tabuleiro)
+
+
+def load_board_from_file(filename="../tabuleiro.txt"):
     with open(filename, 'r') as f:
         # Carregando o tabuleiro do arquivo e
         # convertendo de volta para a estrutura
@@ -202,8 +229,15 @@ def main():
     solved_board = read_solved_board_from_file("tabuleiros_prontos.txt")
     formatted_sudoku = format_sudoku(solved_board)
     board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
-    with open("tabuleiro.txt", 'w') as arquivo:
-        arquivo.write(str(board_for_haskell))
+    board_for_lisp = reformat_comparative_sudoku_for_lisp(formatted_sudoku)
+    with open("../tabuleiro.txt", 'w') as arquivo:
+        linguagem = input("selecione a linguagem: 1-Haskell 2-Lisp\n")
+        if linguagem == "1":
+            arquivo.write(str(board_for_haskell))
+        elif linguagem == "2":
+            write_lisp_board_on_file("../tabuleiro.txt", board_for_lisp)
+        else:
+            print("linguagem não reconhecida")
 
 
 main()
