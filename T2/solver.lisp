@@ -107,7 +107,9 @@
                        (cell-first (nth col (nth (1+ row) (board-cells board))))
                   )
          )
-        )
+        );; Adicionando log
+    (format t "~%Comparative Validity Check: Cell: ~A, Num: ~A, Row: ~A, Col: ~A" cell num row col)
+    (format t "~%Comparisons: Left: ~A, Up: ~A, Right: ~A, Down: ~A" left up right down)
     (and
      (or (not (characterp left))
          (= col 0)
@@ -153,6 +155,7 @@
 
 ;; Encontra a próxima célula vazia no tabuleiro
 (defun findEmpty (board row col)
+  (format t "~%Searching Empty Cell at Row: ~A, Col: ~A" row col)
   (cond ((= row (length (board-cells board))) nil)
         ((let ((cell (nth col (nth row (board-cells board)))))
            (= (cell-first cell) 0))
@@ -166,13 +169,23 @@
 
 ;; Tenta colocar um número em uma célula vazia
 (defun tryNumber (board num row col)
+  ;; Log antes da tentativa de preenchimento
+  (format t "~%tryNumber called with num: ~A, row: ~A, col: ~A" num row col)
+
   (let ((currentCell (nth col (nth row (board-cells board)))))
     (if (/= (cell-first currentCell) 0)
-        ;; Se a célula já está preenchida, procura a próxima célula vazia
-        (let ((nextEmpty (findEmpty board row col)))
-          (if nextEmpty
-              (tryNumber board num (car nextEmpty) (cdr nextEmpty))
-              nil))
+        (progn
+          ;; Se a célula já está preenchida, procura a próxima célula vazia
+          (let ((nextEmpty (findEmpty board row col)))
+            (if nextEmpty
+                (progn
+                  ;; Log quando uma próxima célula vazia é encontrada
+                  (format t "~%Next empty cell found at row: ~A, col: ~A" (car nextEmpty) (cdr nextEmpty))
+                  (tryNumber board num (car nextEmpty) (cdr nextEmpty)))
+                (progn
+                  ;; Log quando não há mais células vazias
+                  (format t "~%No more empty cells found")
+                  nil))))
         ;; Se a célula está vazia, continua com a tentativa
         (cond ((> num (length (board-cells board))) nil)
               ((isValid board num row col)
@@ -185,10 +198,16 @@
                                             (replace2D (board-cells board) row col newCell))))
                  (let ((nextAttempt (solveComparative newBoard)))
                    (if (null nextAttempt)
-                       (tryNumber board (+ num 1) row col)
-                       nextAttempt)))
-              (t (tryNumber board (+ num 1) row col))))))
-)
+                       (progn
+                         ;; Log quando a tentativa falha e tenta o próximo número
+                         (format t "~%Attempt with num: ~A at row: ~A, col: ~A failed, trying next number" num row col)
+                         (tryNumber board (+ num 1) row col))
+                       nextAttempt))))
+              (t (progn
+                   ;; Log quando o número atual não é válido e tenta o próximo
+                   (format t "~%Current num: ~A is not valid at row: ~A, col: ~A, trying next number" num row col)
+                   (tryNumber board (+ num 1) row col)))))))
+
 
 ;; Resolve o tabuleiro
 (defun solveComparative (board)
