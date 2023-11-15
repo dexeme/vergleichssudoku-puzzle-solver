@@ -46,6 +46,24 @@
   )
 )
 
+;; Substitui um elemento em uma matriz 2D
+(defun replace2D (matrix i j x)
+  (let ((new-row (copy-list (nth i matrix))))
+    (setf (nth j new-row) x)
+    (setf (nth i matrix) new-row)
+    matrix
+  )
+)
+
+;; Verifica se o número é válido em todas as regras
+(defun isValid (board num row col)
+  (and (isRowValid board num row)
+       (isColValid board num col)
+       (isBoxValid board num row col)
+       ; (isComparativeValid board num row col)
+  )
+)
+
 ;; Verifica se o número não se repete na linha especificada
 (defun isRowValid (board num row)
   (not (member num (mapcar #'cell-first (nth row (board-cells board)))))
@@ -108,8 +126,8 @@
                   )
          )
         );; Adicionando log
-    (format t "~%Comparative Validity Check: Cell: ~A, Num: ~A, Row: ~A, Col: ~A" cell num row col)
-    (format t "~%Comparisons: Left: ~A, Up: ~A, Right: ~A, Down: ~A" left up right down)
+    (format t "~%~%Comparisons: Left: ~A, Up: ~A, Right: ~A, Down: ~A" left up right down)
+    (format t "~%Comparative Validity Check: Num: ~A, Row: ~A, Col: ~A~%" num row col)
     (and
      (or (not (characterp left))
          (= col 0)
@@ -135,29 +153,11 @@
   )
 )
 
-;; Verifica se o número é válido em todas as regras
-(defun isValid (board num row col)
-  (and (isRowValid board num row)
-       (isColValid board num col)
-       (isBoxValid board num row col)
-       (isComparativeValid board num row col)
-  )
-)
-
-;; Substitui um elemento em uma matriz 2D
-(defun replace2D (matrix i j x)
-  (let ((new-row (copy-list (nth i matrix))))
-    (setf (nth j new-row) x)
-    (setf (nth i matrix) new-row)
-    matrix
-  )
-)
-
 
 ;; Tenta colocar um número em uma célula vazia
 (defun tryNumber (board num row col)
   ;; Log antes da tentativa de preenchimento
-  (format t "~%tryNumber called with num: ~A, row: ~A, col: ~A" num row col)
+  (format t "~%tryNumber with num: ~A, row: ~A, col: ~A~%" num row col)
 
   (let ((currentCell (nth col (nth row (board-cells board)))))
     (if (/= (cell-first currentCell) 0)
@@ -167,29 +167,42 @@
             (if nextEmpty
                 (progn
                   ;; Log quando uma próxima célula vazia é encontrada
-                  (format t "~%Next empty cell found at row: ~A, col: ~A" (car nextEmpty) (cdr nextEmpty))
-                  (tryNumber board num (car nextEmpty) (cdr nextEmpty)))
+                  (format t "~%Next empty cell found at row: ~A, col: ~A~%" (car nextEmpty) (cdr nextEmpty))
+                  (tryNumber board num (car nextEmpty) (cdr nextEmpty))
+                )
                 (progn
                   ;; Log quando não há mais células vazias
-                  (format t "~%No more empty cells found")
-                  nil))))
+                  (format t "~%No more empty cells found~%")
+                  nil
+                )
+            )
+          )
+        )
         ;; Se a célula está vazia, continua com a tentativa
         (cond ((> num (length (board-cells board))) nil)
               ((isValid board num row col)
-               (let* ((newCell (make-cell :first num
-                                          :second (cell-second currentCell)
-                                          :third (cell-third currentCell)
-                                          :fourth (cell-fourth currentCell)
-                                          :fifth (cell-fifth currentCell)))
+               (let* 
+                 ((newCell (make-cell :first num
+                                      :second (cell-second currentCell)
+                                      :third (cell-third currentCell)
+                                      :fourth (cell-fourth currentCell)
+                                      :fifth (cell-fifth currentCell)))
                       (newBoard (make-board :cells 
-                                            (replace2D (board-cells board) row col newCell))))
+                                (replace2D (board-cells board) row col newCell))
+                      )
+                 )          
                  (let ((nextAttempt (solveComparative newBoard)))
                    (if (null nextAttempt)
                        (progn
                          ;; Log quando a tentativa falha e tenta o próximo número
-                         (format t "~%Attempt with num: ~A at row: ~A, col: ~A failed, trying next number" num row col)
-                         (tryNumber board (+ num 1) row col))
-                       nextAttempt))))
+                         (format t "~%Failed with num: ~A at row: ~A, col: ~A, trying next number" num row col)
+                         (tryNumber board (+ num 1) row col)
+                        )
+                       nextAttempt
+                   )
+                 )
+               )
+              )
               (t (progn
                    ;; Log quando o número atual não é válido e tenta o próximo
                    (format t "~%Current num: ~A is not valid at row: ~A, col: ~A, trying next number" num row col)
@@ -202,7 +215,7 @@
 
 ;; Encontra a próxima célula vazia no tabuleiro
 (defun findEmpty (board row col)
-  (format t "~%Searching Empty Cell at Row: ~A, Col: ~A" row col)
+  (format t "~%findEmpty at Row: ~A, Col: ~A" row col)
   (cond ((= row (length (board-cells board))) nil)
         ((let ((cell (nth col (nth row (board-cells board)))))
               (= (cell-first cell) 0)
@@ -219,12 +232,18 @@
 
 ;; Resolve o tabuleiro
 (defun solveComparative (board)
+  (write-line "")
+  (write-line "---Start Solving---")
+  ; Imprime o tabuleiro após a atualização
+  (printBoard board)       
+  (write-line "")
   (if (null (findEmpty board 0 0))
       (list board)
   ; else
       (let* ((emptyCell (findEmpty board 0 0))
              (row (car emptyCell))
-             (col (cdr emptyCell)))
+             (col (cdr emptyCell))
+            )
         (tryNumber board 1 row col)
       )
   )
@@ -245,19 +264,22 @@
 
 ;; Lê o tabuleiro de uma string
 (defun readBoard (input)
-  (let ((cells (mapcar (lambda (row) 
-                         (mapcar (lambda (cell) 
-                                   (make-cell :first (first cell)
-                                              :second (second cell)
-                                              :third (third cell)
-                                              :fourth (fourth cell)
-                                              :fifth (fifth cell)
+  (let ((cells 
+          (mapcar (lambda  (row) 
+                           (mapcar (lambda (cell) 
+                                           (make-cell :first (first cell)
+                                                      :second (second cell)
+                                                      :third (third cell)
+                                                      :fourth (fourth cell)
+                                                      :fifth (fifth cell)
+                                           )
                                    )
-                                 )
-                                 row
-                         ))
-                       (read-from-string input)
-         ))
+                                   row
+                           )
+                  )
+                  (read-from-string input)
+          )
+        )
        )
     (make-board :cells cells)
   )
