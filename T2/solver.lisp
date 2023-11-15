@@ -153,19 +153,6 @@
   )
 )
 
-;; Encontra a próxima célula vazia no tabuleiro
-(defun findEmpty (board row col)
-  (format t "~%Searching Empty Cell at Row: ~A, Col: ~A" row col)
-  (cond ((= row (length (board-cells board))) nil)
-        ((let ((cell (nth col (nth row (board-cells board)))))
-           (= (cell-first cell) 0))
-         (cons row col))
-        ((= col (- (length (nth 0 (board-cells board))) 1))
-         (findEmpty board (+ row 1) 0))
-        (t (findEmpty board row (+ col 1)))
-  )
-)
-
 
 ;; Tenta colocar um número em uma célula vazia
 (defun tryNumber (board num row col)
@@ -206,13 +193,35 @@
               (t (progn
                    ;; Log quando o número atual não é válido e tenta o próximo
                    (format t "~%Current num: ~A is not valid at row: ~A, col: ~A, trying next number" num row col)
-                   (tryNumber board (+ num 1) row col)))))))
+                   (tryNumber board (+ num 1) row col))
+              )
+        )
+    )
+  )
+)
+
+;; Encontra a próxima célula vazia no tabuleiro
+(defun findEmpty (board row col)
+  (format t "~%Searching Empty Cell at Row: ~A, Col: ~A" row col)
+  (cond ((= row (length (board-cells board))) nil)
+        ((let ((cell (nth col (nth row (board-cells board)))))
+              (= (cell-first cell) 0)
+         )
+         (cons row col)
+        )
+        ((= col (- (length (nth 0 (board-cells board))) 1))
+         (findEmpty board (+ row 1) 0)
+        )
+        (t (findEmpty board row (+ col 1)))
+  )
+)
 
 
 ;; Resolve o tabuleiro
 (defun solveComparative (board)
   (if (null (findEmpty board 0 0))
       (list board)
+  ; else
       (let* ((emptyCell (findEmpty board 0 0))
              (row (car emptyCell))
              (col (cdr emptyCell)))

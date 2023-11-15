@@ -225,9 +225,9 @@ def decide_sudoku():
 
 
 def main():
-    write_solved_board_on_file("tabuleiros_prontos.txt", decide_sudoku())
-    solved_board = read_solved_board_from_file("tabuleiros_prontos.txt")
-    formatted_sudoku = format_sudoku(solved_board)
+    # write_solved_board_on_file("tabuleiros_prontos.txt", )
+    # solved_board = read_solved_board_from_file("tabuleiros_prontos.txt")
+    formatted_sudoku = format_sudoku(decide_sudoku())
     board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
     board_for_lisp = reformat_comparative_sudoku_for_lisp(formatted_sudoku)
     with open("../tabuleiro.txt", 'w') as arquivo:
