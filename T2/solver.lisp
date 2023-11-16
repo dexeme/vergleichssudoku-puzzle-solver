@@ -12,43 +12,18 @@
   (cells '())
 )
 
-;; Retorna o primeiro elemento da célula
-(defun first-elem (cell)
-  (cell-first cell)
-)
-
-;; Retorna o segundo elemento da célula
-(defun get-second (cell)
-  (cell-second cell)
-)
-
-;; Retorna o terceiro elemento da célula
-(defun get-third (cell)
-  (cell-third cell)
-)
-
-;; Retorna o quarto elemento da célula
-(defun get-fourth (cell)
-  (cell-fourth cell)
-)
-
-;; Retorna o quinto elemento da célula
-(defun get-fifth (cell)
-  (cell-fifth cell)
-)
-
 ;; Determina o tamanho das subcaixas com base no tamanho do tabuleiro
 (defun box-size (n)
   (cond ((= n 4) '(2 2))
         ((= n 6) '(3 2))
         ((= n 9) '(3 3))
-        (t (error "Invalid board size"))
+        (t (error "Invalid board size~%"))
   )
 )
 
 ;; Substitui um elemento em uma matriz 2D
 (defun replace2D (matrix i j x)
-  (format t "~%Replace2D called with row: ~A, col: ~A, num: ~A~%" i j (first-elem x))
+  (format t "~%Replace2D called with row: ~A, col: ~A, num: ~A~%" i j (cell-first x))
   (finish-output)
   (let ((new-row (copy-list (nth i matrix))))
     (setf (nth j new-row) x)
@@ -57,22 +32,35 @@
   )
 )
 
+(defun debug_valid (board num row col)
+  (format t "~%Debug called with num: ~A row: ~A col: ~A~%" num row col)
+  (printBoard board)
+  (finish-output)
+  T
+)
+
 ;; Verifica se o número é válido em todas as regras
 (defun isValid (board num row col)
-  (and (isRowValid board num row)
-       (isColValid board num col)
-       (isBoxValid board num row col)
-       (isComparativeValid board num row col)
+  (and
+    (isRowValid board num row)
+    (isColValid board num col)
+    ; (debug_valid board num row col)
+    (isBoxValid board num row col)
+    (isComparativeValid board num row col)
   )
 )
 
 ;; Verifica se o número não se repete na linha especificada
 (defun isRowValid (board num row)
+  (format t "~%isRowValid with num: ~A, row: ~A~%" num row)
+  (finish-output)
   (not (member num (mapcar #'cell-first (nth row (board-cells board)))))
 )
 
 ;; Verifica se o número não se repete na coluna especificada
 (defun isColValid (board num col)
+  (format t "~%isColValid with num: ~A, col: ~A~%" num col)
+  (finish-output)
   (not (member num (mapcar (lambda (cell) (cell-first cell))
                            (mapcar (lambda (row) (nth col row)) 
                                    (board-cells board)
@@ -84,24 +72,32 @@
 
 ;; Verifica se o número não se repete na subcaixa especificada
 (defun isBoxValid (board num row col)
-  (let* ((size (box-size (length (board-cells board))))
-         (box-rows (first size))
-         (box-cols (second size))
-         (start-row (* (/ row box-rows) box-rows))
-         (start-col (* (/ col box-cols) box-cols))
-         (box (loop for r from start-row below (+ start-row box-rows)
-                    append (loop for c from start-col below (+ start-col box-cols)
-                                 collect (nth c (nth r (board-cells board)))
-                            )
-              )
+  (format t "~%isBoxValid with num: ~A, row: ~A, col: ~A~%" num row col)
+  (finish-output)
+  (let*
+    ( 
+      (box_size (box-size (length (board-cells board))))
+      (box-rows (first box_size))
+      (box-cols (second box_size))
+      (start-row (* (/ row box-rows) box-rows))
+      (start-col (* (/ col box-cols) box-cols))
+      ;; Problema Aqui, gera células uma célula válida e uma NIL *2
+      (box  (loop for r from start-row below (+ start-row box-rows)
+              append  (loop for c from start-col below (+ start-col box-cols)
+                        collect (nth c (nth r (board-cells board)))
+                      )
+            )
          )
     )
+    (format t "~%Box: ~A~%----~%" box)
     (not (member num (mapcar #'cell-first box)))
   )
 )
 
 ;; Verifica se o número é válido com base nas comparações
 (defun isComparativeValid (board num row col)
+  (format t "~%--------~%isComparativeValid with Num: ~A, Row: ~A, Col: ~A" num row col)
+  (finish-output)
   (let* ((cell (nth col (nth row (board-cells board))))
          (left (cell-second cell))
          (up (cell-third cell))
@@ -127,10 +123,9 @@
                       (cell-first (nth col (nth (1+ row) (board-cells board))))
                   )
          )
-        );; Adicionando log
-    (format t "~%--------~%Comparisons: Left: ~A, Up: ~A, Right: ~A, Down: ~A" left up right down)
-    (format t "~%Comparative Validity Check: Num: ~A, Row: ~A, Col: ~A~%--------~%" num row col)
-    (finish-output)
+        )
+        (format t "~%Comparisons: Left: ~A, Up: ~A, Right: ~A, Down: ~A~%--------~%" left up right down)
+        (finish-output)
     (and
      (or (not (characterp left))
          (= col 0)
@@ -162,34 +157,33 @@
   ;; Log antes da tentativa de preenchimento
   (format t "~%tryNumber with num: ~A, row: ~A, col: ~A~%" num row col)
   (finish-output)
-  (let ((currentCell (nth col (nth row (board-cells board)))))
-    (format t "~%Creating newCell with num: ~A at row: ~A, col: ~A~%" num row col)
-    (finish-output)
     ;; Verifica se o número é válido para a célula atual
     (cond ((> num (length (board-cells board))) nil)
           ((isValid board num row col)
             (format t "~%Creating newCell with num: ~A at row: ~A, col: ~A~%" num row col)
             (finish-output)
-           (let*
-              ((newCell (make-cell :first num
-                                   :second (cell-second currentCell)
-                                   :third (cell-third currentCell)
-                                   :fourth (cell-fourth currentCell)
-                                   :fifth (cell-fifth currentCell)
-                        )
-               )
-               (newBoard (make-board :cells
-                            (replace2D (board-cells board) row col newCell)
-                         )
-               )
-              )
-              (let ((nextAttempt (solveComparative newBoard)))
-                (if (null nextAttempt)
-                    (tryNumber board (+ num 1) row col)
-                    nextAttempt
+            (let*
+                ((currentCell (nth col (nth row (board-cells board))))
+                 (newCell 
+                  (make-cell :first num
+                             :second (cell-second currentCell)
+                             :third (cell-third currentCell)
+                             :fourth (cell-fourth currentCell)
+                             :fifth (cell-fifth currentCell)
+                  )
+                 )
+                 (newBoard (make-board :cells
+                              (replace2D (board-cells board) row col newCell)
+                           )
+                 )
                 )
-              )
-           )
+                (let ((nextAttempt (solveComparative newBoard)))
+                  (if (null nextAttempt)
+                      (tryNumber board (+ num 1) row col)
+                      nextAttempt
+                  )
+                )
+            )
           )
           ;; Log quando o número atual não é válido e tenta o próximo
           (t (progn
@@ -199,7 +193,6 @@
              )
           )
     )
-  )
 )
 
 
@@ -260,26 +253,29 @@
 
 ;; Lê o tabuleiro de uma string
 (defun readBoard (input)
-  (let ((cells 
-          (mapcar 
-            (lambda
-              (row) 
-              (mapcar
-                (lambda (cell)
-                  (make-cell :first (first cell)
-                             :second (second cell)
-                             :third (third cell)
-                             :fourth (fourth cell)
-                             :fifth (fifth cell)
-                  )
-                )
-                row
+  (let 
+    (
+      (cells 
+        (mapcar 
+          (lambda
+            (row) 
+            (mapcar
+              (lambda 
+                (cell)
+                (make-cell  :first (first cell)
+                            :second (second cell)
+                            :third (third cell)
+                            :fourth (fourth cell)
+                            :fifth (fifth cell)
+                 )
               )
+              row
             )
-            (read-from-string input)
           )
+          (read-from-string input)
         )
-       )
+      )
+    )
     (make-board :cells cells)
   )
 )
