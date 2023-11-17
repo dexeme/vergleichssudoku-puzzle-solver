@@ -123,6 +123,27 @@ def print_board(board):
                 print(board[row][col][0], end=" ")
 
 
+def print_formatted_board(board):
+    size = len(board)
+    # Check box
+    if size == 4:
+        box_rows, box_cols = 2, 2
+    elif size == 6:
+        box_rows, box_cols = 3, 2
+    else:
+        box_rows, box_cols = 3, 3
+    for row in range(size):
+        if row % box_rows == 0 and row != 0:
+            print("-" * ((size + 2) * 2))
+        for col in range(size):
+            if col % box_cols == 0 and col != 0:
+                print("| ", end="")
+            if col == size - 1:
+                print(board[row][col])
+            else:
+                print(board[row][col], end=" ; ")
+
+
 # Gerando um tabuleiro de Sudoku resolvido
 # (um padrão fixo para simplicidade)
 
@@ -141,7 +162,7 @@ def read_solved_board_from_file(filename):
     return board
 
 
-def write_lisp_board_on_file(filename, board):
+def write_lisp_board_on_file(f, board):
     tabuleiro = ["("]
     for row in board:
         tabuleiro.append("(")
@@ -152,8 +173,7 @@ def write_lisp_board_on_file(filename, board):
         tabuleiro.append(")")
     tabuleiro.append(")")
     tabuleiro = ''.join(tabuleiro)
-    with open(filename, 'w') as f:
-        f.write(tabuleiro)
+    f.write(tabuleiro)
 
 
 def load_board_from_file(filename="../tabuleiro.txt"):
@@ -225,18 +245,19 @@ def decide_sudoku():
 
 
 def main():
-    linguagem = input("selecione a linguagem: 1-Haskell 2-Lisp\n")
+    linguagem = input("selecione a linguagem: 1-Haskell 2-Lisp 3-Prolog\n")
     board = decide_sudoku()
-    write_solved_board_on_file("../Python/tabuleiros_prontos.txt", board)
-    # board = read_solved_board_from_file("../Python/tabuleiros_prontos.txt")
     formatted_sudoku = format_sudoku(board)
-    board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
-    board_for_lisp = reformat_comparative_sudoku_for_lisp(formatted_sudoku)
+    write_solved_board_on_file("../Python/tabuleiros_prontos.txt", board)
     with open("../tabuleiro.txt", 'w') as arquivo:
         if linguagem == "1":
+            board_for_haskell = reformat_comparative_sudoku_for_hs(
+                formatted_sudoku)
             arquivo.write(str(board_for_haskell))
         elif linguagem == "2":
-            write_lisp_board_on_file("../tabuleiro.txt", board_for_lisp)
+            board_for_lisp = reformat_comparative_sudoku_for_lisp(
+                formatted_sudoku)
+            write_lisp_board_on_file(arquivo, board_for_lisp)
         else:
             print("linguagem não reconhecida")
 
