@@ -202,15 +202,15 @@ sudoku6x6 = [
 ]
 
 sudoku4x4 = [
-    [1, 2, 3, 4],
-    [3, 4, 1, 2],
     [2, 1, 4, 3],
-    [4, 3, 2, 1]
+    [4, 3, 2, 1],
+    [1, 2, 3, 4],
+    [3, 4, 1, 2]
 ]
 
 
 def decide_sudoku():
-    print("Escolha o sudoku: 1-4")
+    print("Escolha o sudoku: 1-9x9, 2-9x9, 3-6x6, 4-4x4")
     esc = input()
     if esc == "1":
         return sudoku1
@@ -225,13 +225,14 @@ def decide_sudoku():
 
 
 def main():
-    # write_solved_board_on_file("tabuleiros_prontos.txt", )
-    # solved_board = read_solved_board_from_file("tabuleiros_prontos.txt")
-    formatted_sudoku = format_sudoku(decide_sudoku())
+    linguagem = input("selecione a linguagem: 1-Haskell 2-Lisp\n")
+    board = decide_sudoku()
+    write_solved_board_on_file("../Python/tabuleiros_prontos.txt", board)
+    # board = read_solved_board_from_file("../Python/tabuleiros_prontos.txt")
+    formatted_sudoku = format_sudoku(board)
     board_for_haskell = reformat_comparative_sudoku_for_hs(formatted_sudoku)
     board_for_lisp = reformat_comparative_sudoku_for_lisp(formatted_sudoku)
     with open("../tabuleiro.txt", 'w') as arquivo:
-        linguagem = input("selecione a linguagem: 1-Haskell 2-Lisp\n")
         if linguagem == "1":
             arquivo.write(str(board_for_haskell))
         elif linguagem == "2":
