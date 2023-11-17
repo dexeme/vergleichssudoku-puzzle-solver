@@ -49,8 +49,6 @@
 
 ;; Substitui um elemento em uma matriz 2D
 (defun replace2D (matrix i j x)
-  (format t "~%Replace2D called with row: ~A, col: ~A, num: ~A~%" i j (cell-first x))
-  (finish-output)
   (let ((new-row (copy-list (nth i matrix))))
     (setf (nth j new-row) x)
     (setf (nth i matrix) new-row)
@@ -70,7 +68,9 @@
 
 ;; Verifica se o número não se repete na linha especificada
 (defun isRowValid (board num row)
-  (not (member num (mapcar #'cell-first (nth row (board-cells board)))))
+  (not (member num (mapcar 
+    #'cell-first (nth row (board-cells board))
+  )))
 )
 
 ;; Verifica se o número não se repete na coluna especificada
@@ -86,7 +86,6 @@
 
 ;; Verifica se o número não se repete na subcaixa especificada
 (defun isBoxValid (board num row col)
-  (finish-output)
   (let*
     ( 
       (box_size (box-size (length (board-cells board))))
@@ -135,7 +134,7 @@
         )
       )
       (rightVal 
-        (if (= col (- (length (nth 0 (board-cells board))) 1))
+        (if (= col (- (length (board-cells board)) 1))
         ; then
           0
         ; else
@@ -151,39 +150,32 @@
         )
       )
     )
-    (format t "~%Comparisons: Left: ~A, Up: ~A, Right: ~A, Down: ~A~%--------~%" left up right down)
-    (finish-output)
     (and
-     (or (not (characterp left))
-         (= col 0)
-         (= leftVal 0)
-         (and (char-equal left #\<) (< num leftVal))
-         (and (char-equal left #\>) (> num leftVal)))
-     (or (not (characterp up))
-         (= row 0)
-         (= upVal 0)
-         (and (char-equal up #\<) (< num upVal))
-         (and (char-equal up #\>) (> num upVal)))
-     (or (not (characterp right))
-         (= col (- (length (nth 0 (board-cells board))) 1))
-         (= rightVal 0)
-         (and (char-equal right #\<) (< num rightVal))
-         (and (char-equal right #\>) (> num rightVal)))
-     (or (not (characterp down))
-         (= row (- (length (board-cells board)) 1))
-         (= downVal 0)
-         (and (char-equal down #\<) (< num downVal))
-         (and (char-equal down #\>) (> num downVal)))
+      ;; Verificação para cada direção
+      (is-valid-comparison left num leftVal)
+      (is-valid-comparison up num upVal)
+      (is-valid-comparison right num rightVal)
+      (is-valid-comparison down num downVal)
     )
+  )
+)
+
+
+(defun is-valid-comparison (comparison num adjacent-val)
+  ; Verifica se a comparação é válida.
+  (cond 
+    ;; Retorna verdadeiro se a célula estiver vazia
+    ((= adjacent-val 0) t)
+    ((and (eq comparison (intern "<")) (< num adjacent-val)) t)
+    ((and (eq comparison (intern ">")) (> num adjacent-val)) t)
+    ;; Retorna falso se a comparação não for satisfeita
+    (t nil)
   )
 )
 
 
 ;; Tenta colocar um número em uma célula vazia
 (defun tryNumber (board num row col)
-  ;; Log antes da tentativa de preenchimento
-  (format t "~%tryNumber with num: ~A, row: ~A, col: ~A~%" num row col)
-  (finish-output)
     ;; Verifica se o número é válido para a célula atual
    (let ((original-board (deep-copy-board board)))
     (cond ((> num (length (board-cells board))) nil)
@@ -237,12 +229,6 @@
 
 ;; Resolve o tabuleiro
 (defun solveComparative (board)
-  (write-line "")
-  (write-line "------Solving------")
-  ; Imprime o tabuleiro após a atualização
-  (printBoard board)       
-  (write-line "-------------------")
-  (finish-output)
   (let ((emptyCell (findEmpty board 0 0)))
     (if (null emptyCell)
         ;; Se não há células vazias, retorna o tabuleiro como solução
@@ -266,6 +252,7 @@
 
 ;; Imprime o tabuleiro
 (defun printBoard (board)
+  (write-line "")
   (dolist (row (board-cells board))
     (mapc #'printCell row)
     (terpri)
