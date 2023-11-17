@@ -32,19 +32,11 @@
   )
 )
 
-(defun debug_valid (board num row col)
-  (format t "~%Debug called with num: ~A row: ~A col: ~A~%" num row col)
-  (printBoard board)
-  (finish-output)
-  T
-)
-
 ;; Verifica se o número é válido em todas as regras
 (defun isValid (board num row col)
   (and
     (isRowValid board num row)
     (isColValid board num col)
-    ; (debug_valid board num row col)
     (isBoxValid board num row col)
     (isComparativeValid board num row col)
   )
@@ -52,22 +44,18 @@
 
 ;; Verifica se o número não se repete na linha especificada
 (defun isRowValid (board num row)
-  (format t "~%isRowValid with num: ~A, row: ~A~%" num row)
-  (finish-output)
   (not (member num (mapcar #'cell-first (nth row (board-cells board)))))
 )
 
 ;; Verifica se o número não se repete na coluna especificada
 (defun isColValid (board num col)
-  (format t "~%isColValid with num: ~A, col: ~A~%" num col)
-  (finish-output)
-  (not (member num (mapcar (lambda (cell) (cell-first cell))
-                           (mapcar (lambda (row) (nth col row)) 
-                                   (board-cells board)
-                           )
-                   )
-        )
-  )
+  (not (member num (mapcar 
+    (lambda (cell) (cell-first cell))
+    (mapcar
+      (lambda (row) (nth col row))
+      (board-cells board)
+    )
+  )))
 )
 
 ;; Verifica se o número não se repete na subcaixa especificada
@@ -79,17 +67,21 @@
       (box_size (box-size (length (board-cells board))))
       (box-rows (first box_size))
       (box-cols (second box_size))
-      (start-row (* (/ row box-rows) box-rows))
-      (start-col (* (/ col box-cols) box-cols))
+      ; (start-row (* (/ row box-rows) box-rows))
+      ; (start-col (* (/ col box-cols) box-cols))
+      (start-row (* (floor row box-rows) box-rows))
+      (start-col (* (floor col box-cols) box-cols))
       ;; Problema Aqui, gera células uma célula válida e uma NIL *2
       (box  (loop for r from start-row below (+ start-row box-rows)
               append  (loop for c from start-col below (+ start-col box-cols)
                         collect (nth c (nth r (board-cells board)))
                       )
             )
-         )
+      )
+
     )
     (format t "~%Box: ~A~%----~%" box)
+    (format t "start-row: ~A, start-col: ~A~%" start-row start-col)
     (not (member num (mapcar #'cell-first box)))
   )
 )
@@ -104,22 +96,30 @@
          (right (cell-fourth cell))
          (down (cell-fifth cell))
          (leftVal (if (= col 0)
+                    ; then
                     0
+                    ; else
                     (cell-first (nth (1- col) (nth row (board-cells board))))
                   )
          )
          (upVal (if (= row 0)
-                  0
+                    ; then
+                    0
+                    ; else
                   (cell-first (nth col (nth (1- row) (board-cells board))))
                 )
          )
          (rightVal (if (= col (- (length (nth 0 (board-cells board))) 1))
-                      0
+                    ; then
+                    0
+                    ; else
                       (cell-first (nth (1+ col) (nth row (board-cells board))))
                    )
          )
          (downVal (if (= row (- (length (board-cells board)) 1))
-                      0
+                    ; then
+                    0
+                    ; else
                       (cell-first (nth col (nth (1+ row) (board-cells board))))
                   )
          )
@@ -198,7 +198,7 @@
 
 ;; Encontra a próxima célula vazia no tabuleiro
 (defun findEmpty (board row col)
-  (format t "~%findEmpty at Row: ~A, Col: ~A" row col)
+  (format t "findEmpty at Row: ~A, Col: ~A~%" row col)
   (finish-output)
   (cond ((= row (length (board-cells board))) nil)
         ((let ((cell (nth col (nth row (board-cells board)))))
