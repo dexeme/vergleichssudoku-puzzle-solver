@@ -176,18 +176,6 @@ def write_lisp_board_on_file(f, board):
     f.write(tabuleiro)
 
 
-def load_board_from_file(filename="../tabuleiro.txt"):
-    with open(filename, 'r') as f:
-        # Carregando o tabuleiro do arquivo e
-        # convertendo de volta para a estrutura
-        # de dados original
-        board_tuple = ast.literal_eval(f.read().strip())
-
-    # Convertendo o tabuleiro de tuplas para listas
-    board_list = [[list(cell) for cell in row] for row in board_tuple]
-    return board_list
-
-
 sudoku1 = [
     [5, 3, 4, 6, 7, 8, 9, 1, 2],
     [6, 7, 2, 1, 9, 5, 3, 4, 8],

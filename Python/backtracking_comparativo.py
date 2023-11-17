@@ -1,4 +1,4 @@
-import gerador
+import ast
 
 
 def find_empty(board, row=0, col=0):
@@ -100,13 +100,33 @@ def solve_comparative(board):
     return try_number(board, 1, row, col)
 
 
+def load_board_from_file(filename="../tabuleiro.txt"):
+    with open(filename, 'r') as f:
+        # Carregando o tabuleiro do arquivo e
+        # convertendo de volta para a estrutura
+        # de dados original
+        board_tuple = ast.literal_eval(f.read().strip())
+
+    # Convertendo o tabuleiro de tuplas para listas
+    board_list = [[list(cell) for cell in row] for row in board_tuple]
+    return board_list
+
+
+def print_board(board):
+    print()
+    size = len(board)
+    for row in range(size):
+        for col in range(size):
+            if col == size - 1:
+                print(board[row][col][0])
+            else:
+                print(board[row][col][0], end=" ")
+
+
 def main():
-    comparative_sudoku_board = gerador.load_board_from_file()
-    print("--------inicial----------\n")
-    gerador.print_board(comparative_sudoku_board)
-    print("\n--------resolucao---------\n")
+    comparative_sudoku_board = load_board_from_file()
     solve_comparative(comparative_sudoku_board)
-    gerador.print_board(comparative_sudoku_board)
+    print_board(comparative_sudoku_board)
 
 
 main()
