@@ -3,6 +3,9 @@ all: main
 main: solver.pl
 	swipl -o solver -c solver.pl
 
+run:
+	./solver
+
 board:
 	python3 ../Python/gerador.py
 
