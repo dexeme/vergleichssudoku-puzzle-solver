@@ -91,11 +91,8 @@
       (box_size (box-size (length (board-cells board))))
       (box-rows (first box_size))
       (box-cols (second box_size))
-      ; (start-row (* (/ row box-rows) box-rows))
-      ; (start-col (* (/ col box-cols) box-cols))
       (start-row (* (floor row box-rows) box-rows))
       (start-col (* (floor col box-cols) box-cols))
-      ;; Problema Aqui, gera células uma célula válida e uma NIL *2
       (box  (loop for r from start-row below (+ start-row box-rows)
               append  (loop for c from start-col below (+ start-col box-cols)
                         collect (nth c (nth r (board-cells board)))
