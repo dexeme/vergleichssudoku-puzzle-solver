@@ -239,13 +239,16 @@ def main():
     write_solved_board_on_file("../Python/tabuleiros_prontos.txt", board)
     with open("../tabuleiro.txt", 'w') as arquivo:
         if linguagem == "1":
-            board_for_haskell = reformat_comparative_sudoku_for_hs(
+            board = reformat_comparative_sudoku_for_hs(
                 formatted_sudoku)
-            arquivo.write(str(board_for_haskell))
+            arquivo.write(str(board))
         elif linguagem == "2":
-            board_for_lisp = reformat_comparative_sudoku_for_lisp(
+            board = reformat_comparative_sudoku_for_lisp(
                 formatted_sudoku)
-            write_lisp_board_on_file(arquivo, board_for_lisp)
+            write_lisp_board_on_file(arquivo, board)
+        elif linguagem == "3":
+            board = reformat_comparative_sudoku(formatted_sudoku)
+            arquivo.write(str(board))
         else:
             print("linguagem não reconhecida")
 

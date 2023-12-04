@@ -208,6 +208,5 @@ models/
 *.bak
 *.swp
 Python/tabuleiros_prontos.txt
-.gitignore
-Python/tabuleiros_prontos.txt
-.gitignore
+T3/solver
+tabuleiro.txt
