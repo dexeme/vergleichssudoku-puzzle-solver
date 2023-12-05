@@ -1,45 +1,68 @@
-% Definição dos tipos de dados
-:- dynamic cell/5.
-:- dynamic board/1.
+:- use_module(library(readutil)).
+:- use_module(library(clpfd)).
 
-% Funções para obter elementos de uma célula
-firstElem((X, _, _, _, _), X).
-getSecond((_, X, _, _, _), X).
-getThird((_, _, X, _, _), X).
-getFourth((_, _, _, X, _), X).
-getFifth((_, _, _, _, X), X).
+% Estrutura de uma célula
+cell(Value, Right, Up, Left, Down).
 
-% para parametrizar e limpar o código
-boxSize(4, 2, 2).
-boxSize(6, 3, 2).
-boxSize(9, 3, 3).
+% Estrutura de um tabuleiro 9x9
+board9x9(Board) :-
+    length(Board, 9),
+    maplist(length_(9), Board).
 
-% Verifica se um número não está repetido na linha atual
-isRowValid(Board, Num, Row) :-
-    nth0(Row, Board, CurrentRow),
-    maplist(firstElem, CurrentRow, RowElements),
-    \+ member(Num, RowElements).
+% Estrutura de um tabuleiro 4x4
+board4x4(Board) :-
+    length(Board, 4),
+    maplist(length_(4), Board).
 
-% Verifica se um número não está repetido na coluna atual
-isColValid(Board, Num, Col) :-
-    maplist(nth0(Col), Board, ColElements),
-    maplist(firstElem, ColElements, ColNumbers),
-    \+ member(Num, ColNumbers).
+% Estrutura de um tabuleiro 6x6
+board6x6(Board) :-
+    length(Board, 6),
+    maplist(length_(6), Board).
 
-% Verifica se um número não está repetido na subcaixa atual
-isBoxValid(Board, Num, Row, Col) :-
-    boxSize(Size, BoxRows, BoxCols),
-    StartRow is Row // BoxRows * BoxRows,
-    StartCol is Col // BoxCols * BoxCols,
-    getBoxElements(Board, StartRow, BoxRows, StartCol, BoxCols, Box),
-    maplist(firstElem, Box, BoxNumbers),
-    \+ member(Num, BoxNumbers).
+% Auxiliar para definir o tamanho das listas internas
+length_(Length, List) :- length(List, Length).
 
-getBoxElements(Board, StartRow, BoxRows, StartCol, BoxCols, Box) :-
-    findall(Cell, (between(StartRow, StartRow+BoxRows-1, R),
-                   between(StartCol, StartCol+BoxCols-1, C),
-                   nth0(R, Board, Row),
-                   nth0(C, Row, Cell)), Box).
+% Verifica se um número é válido em uma linha
+isRowValid(Board) :-
+    maplist(all_distinct, Board).
+
+% Verifica se um número é válido em uma coluna
+isColValid(Board) :-
+    transpose(Board, Columns),
+    maplist(all_distinct, Columns).
+
+% Função para verificar se todos os blocos do tabuleiro são válidos
+isBoxValid(9, Board) :-
+    Board = [As,Bs,Cs,Ds,Es,Fs,Gs,Hs,Is],
+    blocks_3x3(As, Bs, Cs),
+    blocks_3x3(Ds, Es, Fs),
+    blocks_3x3(Gs, Hs, Is).
+isBoxValid(6, Board) :-
+    Board = [As,Bs,Cs,Ds,Es,Fs],
+    blocks_3x2(As, Bs, Cs),
+    blocks_3x2(Ds, Es, Fs).
+isBoxValid(4, Board) :-
+    Board = [As,Bs,Cs,Ds],
+    blocks_2x2(As, Bs),
+    blocks_2x2(Cs, Ds).
+
+% Função para definir os blocos do Sudoku 9x9
+blocks_3x3([], [], []).
+blocks_3x3([A,B,C|Bs1], [D,E,F|Bs2], [G,H,I|Bs3]) :-
+    all_distinct([A,B,C,D,E,F,G,H,I]),
+    blocks_3x3(Bs1, Bs2, Bs3).
+
+% Função para definir os blocos do Sudoku 6x6
+blocks_3x2([], [], []).
+blocks_3x2([A,B|As1], [C,D|As2], [E,F|As3]) :-
+    all_distinct([A,B,C,D,E,F]),
+    blocks_3x2(As1, As2, As3).
+
+% Função para definir os blocos do Sudoku 4x4
+blocks_2x2([], []).
+blocks_2x2([A,B|As], [C,D|Bs]) :-
+    all_distinct([A,B,C,D]),
+    blocks_2x2(As, Bs).
 
 % Verifica se um número é válido considerando as comparações
 isComparativeValid(Board, Num, Row, Col) :-
@@ -77,77 +100,51 @@ checkDown(Row, NumRows, DownVal, '>', Num) :- Num > DownVal, !.
 checkDown(Row, NumRows, 0, _, _).
 checkDown(Row, NumRows, _, _, _).
 
-% Verifica se um número é válido considerando todas as regras
-isValid(Board, Num, Row, Col) :-
-    isRowValid(Board, Num, Row),
-    isColValid(Board, Num, Col),
-    isBoxValid(Board, Num, Row, Col),
-    isComparativeValid(Board, Num, Row, Col).
+/* Funções I/O*/
 
-% Substitui um elemento em uma matriz 2D
-replace2D(Matrix, (I, J), X, NewMatrix) :-
-    nth0(I, Matrix, Row),
-    replace(J, Row, X, NewRow),
-    replace(I, Matrix, NewRow, NewMatrix).
+% Lê o tabuleiro de um arquivo e atribui a uma estrutura
+read_board_from_file(FileName, BoardStructure) :-
+    read_file_to_string(FileName, String, []),
+    term_string(RawBoard, String),
+    determine_board_structure(RawBoard, BoardStructure).
 
-replace(Index, List, Element, NewList) :-
-    nth0(Index, NewList, Element, List).
+% Determina qual estrutura de tabuleiro usar baseado no tamanho
+determine_board_structure(Board, StructuredBoard) :-
+    length(Board, Size),
+    (   Size == 9 -> board9x9(Board), StructuredBoard = Board;
+        Size == 4 -> board4x4(Board), StructuredBoard = Board;
+        Size == 6 -> board6x6(Board), StructuredBoard = Board;
+        fail % falha se não for um tamanho conhecido
+    ).
 
-replace(Index, List, Element, NewList) :-
-    nth0(Index, NewList, _, List),
-    nth0(Index, List, Element, NewList).
+% Exibe uma célula
+print_cell(cell(Value, _, _, _, _)) :-
+    write(Value), write(' ').
 
-% Encontra uma célula vazia no tabuleiro
-find_empty(Board, Row, Col, Row, Col) :-
-    nth0(Row, Board, BoardRow),
-    nth0(Col, BoardRow, Cell),
-    first_elem(Cell, 0).
-find_empty(Board, Row, Col, EmptyRow, EmptyCol) :-
-    nth0(Row, Board, _),
-    length(Board, NumRows),
-    Row < NumRows,
-    length(BoardRow, NumCols),
-    Col < NumCols,
-    (Col =:= NumCols-1 ->
-        NextRow is Row + 1,
-        find_empty(Board, NextRow, 0, EmptyRow, EmptyCol);
-        NextCol is Col + 1,
-        find_empty(Board, Row, NextCol, EmptyRow, EmptyCol)).
-
-% Tenta preencher uma célula vazia com um número válido
-try_number(Board, Num, Row, Col, NewBoard) :-
-    Num =< length(Board),
-    is_valid(Board, Num, Row, Col),
-    replace2D(Board, Row, Col, (Num, _, _, _, _), NewBoard),
-    solve_comparative(NewBoard, _).
-try_number(Board, Num, Row, Col, NewBoard) :-
-    NextNum is Num + 1,
-    try_number(Board, NextNum, Row, Col, NewBoard).
-
-% Resolve o tabuleiro
-solve_comparative(Board, Solved) :-
-    find_empty(Board, 0, 0, Row, Col),
-    try_number(Board, 1, Row, Col, Solved).
-
-% Funções de exibição
-print_cell((Value, _, _, _, _)) :-
-    write(Value),
-    write(' ').
+% Exibe o tabuleiro
 print_board([]).
 print_board([Row|Rows]) :-
     maplist(print_cell, Row),
     nl,
     print_board(Rows).
 
-% Lê o tabuleiro de uma string
-read_board(Input, Board) :-
-    read_term_from_atom(Input, Board, []).
+
+% Função para resolver o Sudoku
+solve(Board) :-
+    length(Board, Size),
+    maplist(same_length(Board), Board),
+    append(Board, Vs),
+    Vs ins 1..Size,
+    isRowValid(Board),
+    isColValid(Board),
+    isBoxValid(Size, Board).
 
 % Função principal
+:- initialization(main).
 main :-
-    read_file('../tabuleiro.txt', Content),
-    read_board(Content, Board),
-    solve_comparative(Board, Solution),
-    (   var(Solution) ->
-        write('No solution found');
-        print_board(Solution)).
+    % Substituir com o caminho do seu arquivo
+    read_board_from_file('../tabuleiro.txt', Board),
+    (   
+        solve(Board, Solution) -> print_board(Solution);
+        writeln('No solution found')
+    ).

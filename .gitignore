@@ -209,4 +209,5 @@ models/
 *.swp
 Python/tabuleiros_prontos.txt
 T3/solver
-tabuleiro.txt
+*.txt
+Python/__pycache__/gerador.cpython-38.pyc

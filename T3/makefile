@@ -6,8 +6,11 @@ main: solver.pl
 run:
 	./solver
 
-board:
-	python3 ../Python/gerador.py
-
 clean:
 	rm -f solver
+
+teste:
+	swipl -o sudoku -c sudoku.pl && rm -f sudoku
+
+board:
+	python3 ../Python/gerador.py
