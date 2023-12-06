@@ -79,12 +79,12 @@ initialize_cells(Board, Size) :-
 initialize_row(Size, Row) :-
     maplist(initialize_cell(Size), Row).
 
-initialize_cell(Size, [Cell, Left, Up, Right, Down]) :-
-    [Cell] ins 1..Size,
+initialize_cell(Size, [Cell, [Left, Up, Right, Down]]) :-
     apply_comparative_restriction(Cell, Left, Size),
     apply_comparative_restriction(Cell, Up, Size),
     apply_comparative_restriction(Cell, Right, Size),
-    apply_comparative_restriction(Cell, Down, Size).
+    apply_comparative_restriction(Cell, Down, Size),
+    [Cell] ins 1..Size.
 
 apply_comparative_restriction(Cell, Comp, Size) :-
     (Comp == '/');
@@ -104,36 +104,31 @@ validate_row_comparisons(Board, Y, Row) :-
     maplist(validate_cell_comparisons(Board, Y), Xs, Row).
 
 % Valida comparações de uma célula com suas adjacentes
-validate_cell_comparisons(Board, Y, X, [CellValue, Left, Up, Right, Down]) :-
-    (Left == '/', true ;  
-        nth1(Y, Board, LeftRow),
-        X2 is X - 1,
-        nth1(X2, LeftRow, [LeftValue|_]),
-        compare_cells(CellValue, LeftValue, Left)
-    ),    
-    (Up == '/', true ;
-        Y1 is Y - 1, 
-        nth1(Y1, Board, UpRow),
-        nth1(X, UpRow, [UpValue|_]),        
-        compare_cells(CellValue, UpValue, Up)
-    ),
-    (Right == '/', true ;
-        nth1(Y, Board, Row),
-        X1 is X + 1,
-        nth1(X1, Row, [NextValue|_]),        
-        compare_cells(CellValue, NextValue, Right)
-    ),       
-    (Down == '/', true ;
-        Y2 is Y + 1,
-        nth1(Y2, Board, DownRow),
-        nth1(X, DownRow, [DownValue|_]),
-        compare_cells(CellValue, DownValue, Down)
-    ).
+validate_cell_comparisons(Board, Y, X, [CellValue, [Left, Up, Right, Down]]) :-
+    adjacent_cell(Board, X, Y, -1, 0, LeftValue), % Célula à esquerda
+    adjacent_cell(Board, X, Y, 1, 0, RightValue), % Célula à direita
+    adjacent_cell(Board, X, Y, 0, -1, UpValue),   % Célula acima
+    adjacent_cell(Board, X, Y, 0, 1, DownValue),  % Célula abaixo
+    apply_comparison(CellValue, LeftValue, Left),
+    apply_comparison(CellValue, UpValue, Up),
+    apply_comparison(CellValue, RightValue, Right),
+    apply_comparison(CellValue, DownValue, Down).
 
-% Compara valores de duas células
-compare_cells(Value1, Value2, Comp) :-
-    ((Comp == '>'), Value1 > Value2);
-    ((Comp == '<'), Value1 < Value2).
+% Obtem o valor de uma célula adjacente
+adjacent_cell(Board, X, Y, DX, DY, AdjValue) :-
+    NewX is X + DX,
+    NewY is Y + DY,
+    length(Board, MaxSize),
+    ((NewX > 0, NewY > 0, NewX =< MaxSize, NewY =< MaxSize) ->
+        nth1(NewY, Board, Row),
+        nth1(NewX, Row, [AdjValue, _]);
+    AdjValue = '/').
+
+% Aplica a comparação se necessário
+apply_comparison(CellValue, AdjValue, Comp) :-
+    (Comp == '/', true); % Ignora comparações com células fora do tabuleiro
+    (Comp == '>', CellValue #> AdjValue);
+    (Comp == '<', CellValue #< AdjValue).
 
 % Função para resolver o Sudoku
 solve(Board) :-
