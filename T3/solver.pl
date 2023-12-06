@@ -1,34 +1,25 @@
-:- use_module(library(readutil)).
 :- use_module(library(clpfd)).
+:- use_module(library(readutil)).
 
-% Estrutura de uma célula
-cell(Value, Right, Up, Left, Down).
+% para comparar apenas o valor da célula
+extract_values(Board, Extracted) :-
+    maplist(extract_cell, Board, Extracted).
 
-% Estrutura de um tabuleiro 9x9
-board9x9(Board) :-
-    length(Board, 9),
-    maplist(length_(9), Board).
+extract_row(Row, Extracted) :-
+    maplist(extract_cell, Row, Extracted).
 
-% Estrutura de um tabuleiro 4x4
-board4x4(Board) :-
-    length(Board, 4),
-    maplist(length_(4), Board).
-
-% Estrutura de um tabuleiro 6x6
-board6x6(Board) :-
-    length(Board, 6),
-    maplist(length_(6), Board).
-
-% Auxiliar para definir o tamanho das listas internas
-length_(Length, List) :- length(List, Length).
+extract_cell([CellValue|_], Value) :-
+   CellValue #= Value.
 
 % Verifica se um número é válido em uma linha
 isRowValid(Board) :-
-    maplist(all_distinct, Board).
+    maplist(extract_values, Board, ValuesBoard),
+    maplist(all_distinct, ValuesBoard).
 
 % Verifica se um número é válido em uma coluna
 isColValid(Board) :-
-    transpose(Board, Columns),
+    maplist(extract_values, Board, ValuesBoard),
+    transpose(ValuesBoard, Columns),
     maplist(all_distinct, Columns).
 
 % Função para verificar se todos os blocos do tabuleiro são válidos
@@ -49,102 +40,124 @@ isBoxValid(4, Board) :-
 % Função para definir os blocos do Sudoku 9x9
 blocks_3x3([], [], []).
 blocks_3x3([A,B,C|Bs1], [D,E,F|Bs2], [G,H,I|Bs3]) :-
-    all_distinct([A,B,C,D,E,F,G,H,I]),
+    extract_values([A,B,C,D,E,F,G,H,I], Values),
+    all_distinct(Values),
     blocks_3x3(Bs1, Bs2, Bs3).
 
 % Função para definir os blocos do Sudoku 6x6
 blocks_3x2([], [], []).
 blocks_3x2([A,B|As1], [C,D|As2], [E,F|As3]) :-
-    all_distinct([A,B,C,D,E,F]),
+    extract_values([A,B,C,D,E,F], Values),
+    all_distinct(Values),
     blocks_3x2(As1, As2, As3).
 
 % Função para definir os blocos do Sudoku 4x4
 blocks_2x2([], []).
 blocks_2x2([A,B|As], [C,D|Bs]) :-
-    all_distinct([A,B,C,D]),
+    extract_values([A,B,C,D], Values),
+    all_distinct(Values),
     blocks_2x2(As, Bs).
 
-% Verifica se um número é válido considerando as comparações
-isComparativeValid(Board, Num, Row, Col) :-
-    nth0(Row, Board, RowList),
-    nth0(Col, RowList, (_, Left, Up, Right, Down)),
-    (Col =:= 0 -> LeftVal = 0 ; nth0(Col-1, RowList, (_, LeftVal, _, _, _))),
-    (Row =:= 0 -> UpVal = 0 ; nth0(Row-1, Board, UpperRow), nth0(Col, UpperRow, (_, UpVal, _, _, _))),
-    length(RowList, NumCols),
-    (Col =:= NumCols-1 -> RightVal = 0 ; nth0(Col+1, RowList, (_, RightVal, _, _, _))),
-    length(Board, NumRows),
-    (Row =:= NumRows-1 -> DownVal = 0 ; nth0(Row+1, Board, LowerRow), nth0(Col, LowerRow, (_, DownVal, _, _, _))),
-    checkLeft(Col, LeftVal, Left, Num) ,
-    checkUp(Row, UpVal, Up, Num) ,
-    checkRight(Col, NumCols, RightVal, Right, Num) ,
-    checkDown(Row, NumRows, DownVal, Down, Num).
-
-% Funções para verificar as comparações em todas as direções
-checkLeft(Col, LeftVal, '<', Num) :- Num < LeftVal, !.
-checkLeft(Col, LeftVal, '>', Num) :- Num > LeftVal, !.
-checkLeft(_, 0, _, _).
-checkLeft(_, _, _, _).
-
-checkUp(Row, UpVal, '<', Num) :- Num < UpVal, !.
-checkUp(Row, UpVal, '>', Num) :- Num > UpVal, !.
-checkUp(_, 0, _, _).
-checkUp(_, _, _, _).
-
-checkRight(Col, NumCols, RightVal, '<', Num) :- Num < RightVal, !.
-checkRight(Col, NumCols, RightVal, '>', Num) :- Num > RightVal, !.
-checkRight(Col, NumCols, 0, _, _).
-checkRight(Col, NumCols, _, _, _).
-
-checkDown(Row, NumRows, DownVal, '<', Num) :- Num < DownVal, !.
-checkDown(Row, NumRows, DownVal, '>', Num) :- Num > DownVal, !.
-checkDown(Row, NumRows, 0, _, _).
-checkDown(Row, NumRows, _, _, _).
-
-/* Funções I/O*/
-
-% Lê o tabuleiro de um arquivo e atribui a uma estrutura
-read_board_from_file(FileName, BoardStructure) :-
-    read_file_to_string(FileName, String, []),
-    term_string(RawBoard, String),
-    determine_board_structure(RawBoard, BoardStructure).
-
-% Determina qual estrutura de tabuleiro usar baseado no tamanho
-determine_board_structure(Board, StructuredBoard) :-
+% Valida as comparações entre células
+isComparativeValid(Board) :-
     length(Board, Size),
-    (   Size == 9 -> board9x9(Board), StructuredBoard = Board;
-        Size == 4 -> board4x4(Board), StructuredBoard = Board;
-        Size == 6 -> board6x6(Board), StructuredBoard = Board;
-        fail % falha se não for um tamanho conhecido
+    numlist(1, Size, Indices),
+    maplist(validate_row_comparisons(Board), Indices, Board).
+
+% Valida as comparações em uma linha
+validate_row_comparisons(Board, Y, Row) :-
+    length(Row, Length),
+    numlist(1, Length, Xs),
+    maplist(validate_cell_comparisons(Board, Y), Xs, Row).
+
+% Valida comparações de uma célula com suas adjacentes
+validate_cell_comparisons(Board, Y, X, [CellValue, Right, Up, Left, Down]) :-
+    nth1(Y, Board, Row),
+    nth1(X, Row, [Value|_]),   
+
+    Value #= V,
+    CellValue #= V,
+
+    (Right == '/', true ;
+        nth1(Y, Board, Row),
+        X1 is X + 1,
+        nth1(X1, Row, [NextValue|_]),
+        
+        NextValue #= W,
+        
+        compare_cells(V, W, Right)
+    ),
+       
+    (Up == '/', true ; 
+        nth1(Y1, Board, UpRow),
+        Y1 is Y - 1, 
+        nth1(X, UpRow, [UpValue|_]),
+        
+        UpValue #= U,
+        
+        compare_cells(U, V, Up)
+    ),
+    
+    (Left == '/', true ;  
+        nth1(Y, Board, LeftRow),
+        X2 is X - 1,
+        nth1(X2, LeftRow, [LeftValue|_]), 
+        
+        LeftValue #= L,
+    
+        compare_cells(L, V, Left)
+    ),
+    
+    (Down == '/', true ;
+        nth1(Y2, Board, DownRow), 
+        Y2 is Y + 1,
+        nth1(X, DownRow, [DownValue|_]),
+        
+        DownValue #= D,
+            
+        compare_cells(V, D, Down)
     ).
 
-% Exibe uma célula
-print_cell(cell(Value, _, _, _, _)) :-
-    write(Value), write(' ').
-
-% Exibe o tabuleiro
-print_board([]).
-print_board([Row|Rows]) :-
-    maplist(print_cell, Row),
-    nl,
-    print_board(Rows).
-
+% Compara valores de duas células
+compare_cells(Value1, Value2, Comp) :-
+    ((Comp == '>'), Value1 #> Value2);
+    ((Comp == '<'), Value1 #< Value2).
 
 % Função para resolver o Sudoku
 solve(Board) :-
     length(Board, Size),
     maplist(same_length(Board), Board),
-    append(Board, Vs),
+    maplist(extract_values, Board, ValuesBoard),
+    append(ValuesBoard, Vs),
     Vs ins 1..Size,
     isRowValid(Board),
     isColValid(Board),
-    isBoxValid(Size, Board).
+    isBoxValid(Size, Board). %,
+    %isComparativeValid(Board).
+
+% Lê o tabuleiro de um arquivo
+read_board_from_file(FileName, Board) :-
+    read_file_to_string(FileName, String, []),
+    term_string(Board, String).
+
+% Imprimir o tabuleiro de forma legível
+print_board(Board) :-
+    maplist(print_row, Board).
+
+print_row(Row) :-
+    maplist(print_cell, Row),
+    nl.
+
+print_cell([Value, _]) :-
+    write(Value),
+    write(' ').
 
 % Função principal
 :- initialization(main).
 main :-
-    % Substituir com o caminho do seu arquivo
+    % read_board_from_file('sudoku.txt', Board),
     read_board_from_file('../tabuleiro.txt', Board),
-    (   
-        solve(Board, Solution) -> print_board(Solution);
+    (   solve(Board) -> 
+        print_board(Board);
         writeln('No solution found')
     ).

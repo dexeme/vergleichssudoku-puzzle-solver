@@ -102,6 +102,23 @@ def reformat_comparative_sudoku_for_lisp(board):
     return tuple(reformatted_board)
 
 
+def reformat_comparative_sudoku_for_prolog(board):
+    reformatted_board = []
+    row_number = 0
+    for row in board:
+        row_number += 1
+        reformatted_row = []
+        col_number = 0
+        for cell in row:
+            col_number += 1
+            value = "X" + str(row_number) + str(col_number)
+            reformatted_cell = [value, cell.split()]
+            reformatted_row.append(reformatted_cell)
+        reformatted_board.append(reformatted_row)
+
+    return reformatted_board
+
+
 def print_board(board):
     size = len(board)
     # Check box
@@ -147,7 +164,6 @@ def print_formatted_board(board):
 # Gerando um tabuleiro de Sudoku resolvido
 # (um padrão fixo para simplicidade)
 
-
 def write_solved_board_on_file(filename, board):
     with open(filename, 'w') as f:
         for row in board:
@@ -172,6 +188,26 @@ def write_lisp_board_on_file(f, board):
         tabuleiro.pop()
         tabuleiro.append(")")
     tabuleiro.append(")")
+    tabuleiro = ''.join(tabuleiro)
+    f.write(tabuleiro)
+
+
+def write_prolog_board_on_file(f, board):
+    tabuleiro = ["["]
+    for row in board:
+        tabuleiro.append("[")
+        for cell in row:
+            value, comparatives = cell
+            tabuleiro.append("[")
+            tabuleiro.append(value)
+            tabuleiro.append(', ')
+            tabuleiro.append(str(comparatives))
+            tabuleiro.append("]")
+            tabuleiro.append(', ')
+        tabuleiro.pop()
+        tabuleiro.append("], ")
+    tabuleiro.pop()
+    tabuleiro.append("]].")
     tabuleiro = ''.join(tabuleiro)
     f.write(tabuleiro)
 
@@ -243,12 +279,11 @@ def main():
                 formatted_sudoku)
             arquivo.write(str(board))
         elif linguagem == "2":
-            board = reformat_comparative_sudoku_for_lisp(
-                formatted_sudoku)
+            board = reformat_comparative_sudoku_for_lisp(formatted_sudoku)
             write_lisp_board_on_file(arquivo, board)
         elif linguagem == "3":
-            board = reformat_comparative_sudoku(formatted_sudoku)
-            arquivo.write(str(board))
+            board = reformat_comparative_sudoku_for_prolog(formatted_sudoku)
+            write_prolog_board_on_file(arquivo, board)
         else:
             print("linguagem não reconhecida")
 
