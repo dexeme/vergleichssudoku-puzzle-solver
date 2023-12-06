@@ -1,6 +1,17 @@
 :- use_module(library(clpfd)).
 :- use_module(library(readutil)).
 
+extract_values(Board, Extracted) :-
+    maplist(extract_cell, Board, Extracted).
+
+extract_row(Row, Extracted) :-
+    maplist(extract_cell, Row, Extracted).
+
+extract_cell([CellValue|_], Value) :-
+   CellValue #= Value.
+extract_cell(CellValue, Value) :-
+   CellValue #= Value.
+
 % Verifica se um número é válido em uma linha
 isRowValid(Board) :-
     maplist(all_distinct, Board).
@@ -46,12 +57,12 @@ blocks_2x2([A,B|As], [C,D|Bs]) :-
 % Função para resolver o Sudoku
 solve(Board) :-
     length(Board, Size),
-    maplist(same_length(Board), Board),
-    append(Board, Vs),
+    maplist(extract_values, Board, ValuesBoard),
+    append(ValuesBoard, Vs),
     Vs ins 1..Size,
-    isRowValid(Board),
-    isColValid(Board),
-    isBoxValid(Size, Board).
+    isRowValid(ValuesBoard),
+    isColValid(ValuesBoard),
+    isBoxValid(Size, ValuesBoard).
 
 % Lê o tabuleiro de um arquivo
 read_board_from_file(FileName, Board) :-

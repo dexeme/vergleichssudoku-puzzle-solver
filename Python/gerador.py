@@ -102,23 +102,6 @@ def reformat_comparative_sudoku_for_lisp(board):
     return tuple(reformatted_board)
 
 
-def reformat_comparative_sudoku_for_prolog(board):
-    reformatted_board = []
-    row_number = 0
-    for row in board:
-        row_number += 1
-        reformatted_row = []
-        col_number = 0
-        for cell in row:
-            col_number += 1
-            value = "X" + str(row_number) + str(col_number)
-            reformatted_cell = [value, cell.split()]
-            reformatted_row.append(reformatted_cell)
-        reformatted_board.append(reformatted_row)
-
-    return reformatted_board
-
-
 def print_board(board):
     size = len(board)
     # Check box
@@ -192,6 +175,23 @@ def write_lisp_board_on_file(f, board):
     f.write(tabuleiro)
 
 
+def reformat_comparative_sudoku_for_prolog(board):
+    reformatted_board = []
+    row_number = 0
+    for row in board:
+        row_number += 1
+        reformatted_row = []
+        col_number = 0
+        for cell in row:
+            col_number += 1
+            value = "_"
+            reformatted_cell = [value, cell.split()]
+            reformatted_row.append(reformatted_cell)
+        reformatted_board.append(reformatted_row)
+
+    return reformatted_board
+
+
 def write_prolog_board_on_file(f, board):
     tabuleiro = ["["]
     for row in board:
@@ -205,7 +205,7 @@ def write_prolog_board_on_file(f, board):
             tabuleiro.append("]")
             tabuleiro.append(', ')
         tabuleiro.pop()
-        tabuleiro.append("], ")
+        tabuleiro.append("],\n")
     tabuleiro.pop()
     tabuleiro.append("]].")
     tabuleiro = ''.join(tabuleiro)
