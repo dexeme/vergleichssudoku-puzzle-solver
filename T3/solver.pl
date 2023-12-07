@@ -64,7 +64,7 @@ blocks_2x2([A,B|As], [C,D|Bs]) :-
 
 % para comparar apenas o valor da célula
 extract_values(Board, Extracted) :-
-    maplist(extract_cell, Board, Extracted).
+    maplist(extract_row, Board, Extracted).
 
 extract_row(Row, Extracted) :-
     maplist(extract_cell, Row, Extracted).
@@ -135,7 +135,7 @@ solve(Board) :-
     length(Board, Size),
     initialize_cells(Board, Size),
     isComparativeValid(Board),
-    maplist(extract_values, Board, ValuesBoard),
+    extract_values(Board, ValuesBoard),
     isRowValid(ValuesBoard),
     isColValid(ValuesBoard),
     isBoxValid(Size, ValuesBoard).
