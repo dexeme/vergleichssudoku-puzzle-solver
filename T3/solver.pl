@@ -143,7 +143,6 @@ solve(Board) :-
 % Função principal
 :- initialization(main).
 main :-
-    % read_board_from_file('sudoku.txt', Board),
     read_board_from_file('../tabuleiro.txt', Board),
     (   solve(Board) -> 
         print_board(Board);
